@@ -81,6 +81,10 @@
     height: 100vh; /* Ensure body takes full viewport height */
   }
 
+  .bg-custom-blue {
+    background-color: #1C86EE;
+  }
+
   .custom-scroll-area {
     height: calc(100vh - 4rem); /* Adjust for header height */
     overflow-y: auto;

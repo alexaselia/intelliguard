@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config = {
   darkMode: ["class"],
@@ -52,8 +52,11 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Add custom blue color
         'custom-blue': '#3F7CAF',
+        primaryBlue: {
+          DEFAULT: '#2D3343',
+          hover: '#3E4757',
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -77,6 +80,6 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
+} satisfies Config;
 
 export default config;
