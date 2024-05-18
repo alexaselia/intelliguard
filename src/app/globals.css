@@ -111,6 +111,10 @@
     background-color: rgba(45, 50, 57, 0.7); /* Darker color on hover */
   }
 
+  .hidden-init {
+    opacity: 0;
+  }
+
   .main-content {
     height: 100%;
     display: flex;

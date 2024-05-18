@@ -4,25 +4,27 @@ import React, { useEffect, useState } from 'react';
 import SecondaryHeader from '@/components/ui/SecondaryHeader';
 import DynamicCameraCard from '@/components/ui/DynamicCameraCard';
 
-interface CameraData {
-  name: string;
+interface Stream {
   id: string;
-  ip: string;
-  codec: string;
-  size: string;
-  fps: number;
+  name: string;
+  streamUrl: string;
 }
 
 const Cameras: React.FC = () => {
-  const [cameraData, setCameraData] = useState<CameraData[]>([]);
+  const [streams, setStreams] = useState<Stream[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('/api/readExcel');
-      const data: CameraData[] = await response.json();
-      setCameraData(data);
+    const fetchStreams = async () => {
+      try {
+        const response = await fetch('/api/streams');
+        const data: Stream[] = await response.json();
+        console.log('Fetched Streams:', data); // Debug log
+        setStreams(data);
+      } catch (error) {
+        console.error('Failed to fetch streams:', error);
+      }
     };
-    fetchData();
+    fetchStreams();
   }, []);
 
   return (
@@ -35,12 +37,12 @@ const Cameras: React.FC = () => {
       </div>
       <SecondaryHeader />
       <div className="grid grid-cols-2 gap-10">
-        {cameraData.map((camera) => (
+        {streams.map((stream) => (
           <DynamicCameraCard
-            key={camera.id}
-            name={camera.name}
-            streamUrl={`http://rtmp.megaguardiao.com.br:8000/live/${camera.name}/index.m3u8`}
-            cameraId={camera.name}
+            key={stream.id}
+            name={stream.name}
+            streamUrl={stream.streamUrl}
+            cameraId={stream.id}
           />
         ))}
       </div>

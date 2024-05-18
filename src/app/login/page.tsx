@@ -20,10 +20,14 @@ const LoginPage: React.FC = () => {
       const tiles = logoContainer.querySelectorAll('rect, path, circle'); // Select all elements within the SVG
 
       if (svg && tiles.length > 0) {
-        // Ensure the logo container is initially centered
-        gsap.set(logoContainer, { position: 'absolute', top: '50%', left: '50%', xPercent: -50, yPercent: -50 });
+        // Ensure the logo container is initially centered and hidden
+        gsap.set(logoContainer, { position: 'absolute', top: '50%', left: '50%', xPercent: -50, yPercent: -50, opacity: 0 });
         gsap.set(tiles, { autoAlpha: 0, y: 50 });
-        gsap.set(card, { autoAlpha: 0 });
+        gsap.set(card, { autoAlpha: 0, opacity: 0 });
+
+        // Remove hidden-init class immediately before the animation starts
+        gsap.set(logoContainer, { opacity: 1 });
+        gsap.set(card, { opacity: 1 });
 
         const timeline = gsap.timeline();
 
@@ -35,8 +39,8 @@ const LoginPage: React.FC = () => {
         // Move logo to final position dynamically
         const logoHeight = logoContainer.clientHeight;
         const cardHeight = card.clientHeight;
-        const padding = 20; // Small padding between logo bottom edge and card top edge
-        const moveUpDistance = -(logoHeight / 2.5 + padding + cardHeight / 2.5);
+        const padding = 10; // Small padding between logo bottom edge and card top edge
+        const moveUpDistance = -(logoHeight / 2 + padding + cardHeight / 2);
 
         timeline.to(logoContainer, { y: moveUpDistance, duration: 1, ease: 'power2.inOut' });
 
@@ -61,8 +65,8 @@ const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#13171E] p-4">
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <div ref={logoContainerRef} dangerouslySetInnerHTML={{ __html: logoSvg }} />
-        <div ref={cardRef} className="mt-20"> {/* Adding margin-top to ensure proper spacing */}
+        <div ref={logoContainerRef} dangerouslySetInnerHTML={{ __html: logoSvg }} className="hidden-init" />
+        <div ref={cardRef} className="mt-20 hidden-init">
           <LoginCard onLoginClick={handleLoginClick} />
         </div>
       </div>
