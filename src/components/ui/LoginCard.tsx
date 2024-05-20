@@ -46,7 +46,7 @@ const LoginCard: React.FC<LoginCardProps> = ({ onLoginClick }) => {
       </CardContent>
       <CardFooter className="text-center p-4">
         <p className="text-sm text-gray-400">
-          Don't have an account? <a href="#" className="text-primary-500 hover:underline">Sign up</a>
+          Don&apos;t have an account? <a href="#" className="text-primary-500 hover:underline">Sign up</a>
         </p>
       </CardFooter>
     </Card>
