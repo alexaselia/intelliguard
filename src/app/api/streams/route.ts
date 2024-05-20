@@ -11,7 +11,7 @@ const streams = [
 const MAX_RETRIES = 10;
 const RETRY_DELAY = 1000; // 1000 = 1 second
 
-async function fetchWithRetry(url, retries = MAX_RETRIES) {
+async function fetchWithRetry(url: string, retries = MAX_RETRIES) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const response = await fetch(url, { method: 'HEAD' });
