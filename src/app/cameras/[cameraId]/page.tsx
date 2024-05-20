@@ -1,12 +1,11 @@
-// app/camera/[cameraId]/page.tsx
 "use client";
 
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 
 const CameraChannelPage: React.FC = () => {
-  const router = useRouter();
-  const { cameraId } = router.query;
+  const pathname = usePathname();
+  const cameraId = pathname.split('/').pop();
 
   return (
     <div>
