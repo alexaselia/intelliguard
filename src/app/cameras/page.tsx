@@ -1,4 +1,4 @@
-"use client"; // Add this line
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import SecondaryHeader from '@/components/ui/SecondaryHeader';

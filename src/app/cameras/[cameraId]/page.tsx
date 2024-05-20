@@ -1,4 +1,6 @@
 // app/camera/[cameraId]/page.tsx
+"use client";
+
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
