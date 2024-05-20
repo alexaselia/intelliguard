@@ -26,7 +26,6 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({ src }) => {
           maxMaxBufferLength: 60,
           maxBufferSize: 60 * 1000 * 1000, // 60MB
           maxBufferHole: 0.1,
-          lowBufferWatchdogPeriod: 0.5,
           highBufferWatchdogPeriod: 3,
           nudgeMaxRetry: 5,
           fragLoadingTimeOut: 20000,
