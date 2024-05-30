@@ -3,6 +3,21 @@ import ExcelJS from 'exceljs';
 import path from 'path';
 import fs from 'fs';
 
+interface CameraData {
+  name: string;
+  id: string;
+  ip: string;
+  codec: string;
+  size: string;
+  fps: number;
+  latitude: number;
+  longitude: number;
+  shared: boolean;
+  ownership: boolean;
+  url: string;
+  category: string;
+}
+
 export async function GET() {
   const filePath = path.resolve('public/cameras.xlsx');
   const workbook = new ExcelJS.Workbook();
@@ -17,7 +32,7 @@ export async function GET() {
   try {
     await workbook.xlsx.readFile(filePath);
     const sheet = workbook.worksheets[0];
-    const data = [];
+    const data: CameraData[] = [];
 
     sheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1) { // Skip header row
