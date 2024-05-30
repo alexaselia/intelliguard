@@ -3,9 +3,10 @@ import Hls from 'hls.js';
 
 interface HlsPlayerProps {
   src: string;
+  autoPlay?: boolean;
 }
 
-const HlsPlayer: React.FC<HlsPlayerProps> = ({ src }) => {
+const HlsPlayer: React.FC<HlsPlayerProps> = ({ src, autoPlay = false }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -18,53 +19,26 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({ src }) => {
       const onLoadedMetadata = () => {
         setLoading(false);
         videoRef.current?.parentElement?.classList.add('video-loaded');
+        if (!autoPlay) {
+          video.pause(); // Pause the video if autoPlay is false
+          video.currentTime = 0; // Ensure the video starts from the beginning
+        }
       };
 
       if (Hls.isSupported()) {
-        const hls = new Hls({
-          maxBufferLength: 20, // Reduce buffer length
-          maxMaxBufferLength: 60,
-          maxBufferSize: 60 * 1000 * 1000, // 60MB
-          maxBufferHole: 0.1,
-          highBufferWatchdogPeriod: 3,
-          nudgeMaxRetry: 5,
-          fragLoadingTimeOut: 20000,
-          levelLoadingTimeOut: 10000,
-          fragLoadingRetryDelay: 1000,
-          levelLoadingRetryDelay: 1000,
-          fragLoadingMaxRetryTimeout: 64000,
-          startLevel: -1,
-          capLevelToPlayerSize: true,
-        });
-
+        const hls = new Hls();
+        console.log('Loading HLS source:', src);
         hls.loadSource(src);
         hls.attachMedia(video);
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          video.play();
+          console.log('HLS manifest loaded');
+          if (autoPlay) {
+            video.play();
+          }
         });
 
         hls.on(Hls.Events.ERROR, (event, data) => {
-          if (data.fatal) {
-            switch (data.type) {
-              case Hls.ErrorTypes.NETWORK_ERROR:
-                console.error('Network error:', data);
-                hls.startLoad();
-                break;
-              case Hls.ErrorTypes.MEDIA_ERROR:
-                console.error('Media error:', data);
-                hls.recoverMediaError();
-                break;
-              default:
-                console.error('Other fatal error:', data);
-                hls.destroy();
-                break;
-            }
-          } else {
-            console.warn('Non-fatal error:', data);
-            if (data.details === Hls.ErrorDetails.BUFFER_APPEND_ERROR) {
-              hls.recoverMediaError();
-            }
-          }
+          console.error('HLS error:', event, data);
         });
 
         video.addEventListener('loadedmetadata', onLoadedMetadata);
@@ -74,6 +48,7 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({ src }) => {
           video.removeEventListener('loadedmetadata', onLoadedMetadata);
         };
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        console.log('Native HLS support detected');
         video.src = src;
         video.addEventListener('loadedmetadata', onLoadedMetadata);
 
@@ -84,13 +59,15 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({ src }) => {
         return () => {
           video.removeEventListener('loadedmetadata', onLoadedMetadata);
         };
+      } else {
+        console.error('HLS is not supported');
       }
     }
-  }, [src]);
+  }, [src, autoPlay]);
 
   return (
     <div className="video-container">
-      <video ref={videoRef} className="w-full h-full object-cover" />
+      <video ref={videoRef} className="w-full h-full object-cover transform scale-[1.04]" /> {/* Increase zoom */}
       {loading && <div className="loading-spinner"></div>}
     </div>
   );

@@ -3,14 +3,18 @@ import { cn } from "@/lib/utils";
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & { style?: React.CSSProperties }
+>(({ className, style, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
       "rounded-lg bg-[hsl(var(--card-background))] text-card-foreground shadow-sm",
       className
     )}
+    style={{
+      ...style,
+      outline: '1px solid hsl(var(--card-background))', // Inline style for outline
+    }}
     {...props}
   />
 ));

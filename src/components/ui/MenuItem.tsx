@@ -7,7 +7,7 @@ interface MenuItemProps {
   description: string;
   iconPath: string;
   isActive: boolean;
-  onClick: () => void; // Add onClick prop
+  onClick: () => void;
 }
 
 const MenuItem: React.FC<MenuItemProps> = ({ name, href, description, iconPath, isActive, onClick }) => {
@@ -19,7 +19,8 @@ const MenuItem: React.FC<MenuItemProps> = ({ name, href, description, iconPath, 
       } hover:bg-gray-700 cursor-pointer`} // Add cursor-pointer for better UX
     >
       <Image src={iconPath} alt={`${name} icon`} width={24} height={24} className="mr-3" />
-      <div>
+      <div className="hidden md:block">
+        {/* Hide text content on small screens */}
         <p className="font-semibold">{name}</p>
         <p className="text-gray-400">{description}</p>
       </div>

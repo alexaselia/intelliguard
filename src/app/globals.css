@@ -1,73 +1,59 @@
-/* globals.css */
+@import 'mapbox-gl/dist/mapbox-gl.css';
+@import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+@import 'react-vertical-timeline-component/style.min.css';
+
+
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Global Resets and Base Styles */
 @layer base {
   :root {
     --background: 210 9% 11%; /* HSL equivalent of #13171E */
     --foreground: 224 71.4% 4.1%;
-
     --sidebar-background: 224 19% 22%; /* HSL equivalent of #2D3239 */
     --card-background: 210 13% 19%; /* HSL equivalent of #262B31 */
-
     --card: 0 0% 100%;
     --card-foreground: 224 71.4% 4.1%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
-
     --primary: 220.9 39.3% 11%;
     --primary-foreground: 210 20% 98%;
-
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 220.9 39.3% 11%;
-
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
-
     --accent: 220 14.3% 95.9%;
     --accent-foreground: 220.9 39.3% 11%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 20% 98%;
-
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 224 71.4% 4.1%;
-
     --radius: 0.5rem;
   }
 
   .dark {
     --background: 210 9% 11%; /* HSL equivalent of #13171E */
     --foreground: 210 20% 98%;
-
     --sidebar-background: 224 19% 22%; /* HSL equivalent of #2D3239 */
     --card-background: 210 13% 19%; /* HSL equivalent of #262B31 */
-
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
-
     --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 20% 98%;
-
     --primary: 210 20% 98%;
     --primary-foreground: 220.9 39.3% 11%;
-
     --secondary: 215 27.9% 16.9%;
     --secondary-foreground: 210 20% 98%;
-
     --muted: 215 27.9% 16.9%;
     --muted-foreground: 217.9 10.6% 64.9%;
-
     --accent: 215 27.9% 16.9%;
     --accent-foreground: 210 20% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 20% 98%;
-
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
     --ring: 216 12.2% 83.9%;
@@ -77,20 +63,85 @@
     @apply border-border;
   }
 
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     @apply bg-background text-foreground;
     overflow: hidden; /* Hide the default scrollbar */
     height: 100vh; /* Ensure body takes full viewport height */
   }
+}
 
-  .bg-custom-blue {
-    background-color: #1C86EE;
+/* Layout Specific Styles */
+@layer base {
+  .main-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .map-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
+  .top-right-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .menu-button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    cursor: pointer;
+  }
+
+  .menu-button img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .search-bar {
+    display: flex;
+    gap: 5px;
+  }
+
+  .marker {
+    background-image: url('https://docs.mapbox.com/help/demos/custom-markers-gl-js/mapbox-icon.png');
+    background-size: 100%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    position: absolute;
+    z-index: 0;
   }
 
   .custom-scroll-area {
-    height: calc(100vh - 4rem); /* Adjust for header height */
     overflow-y: auto;
     scroll-behavior: smooth; /* Enable smooth scrolling */
+    height: 100%; /* Ensure it takes full height */
   }
 
   /* Custom scrollbar styles */
@@ -113,21 +164,53 @@
     background-color: rgba(45, 50, 57, 0.7); /* Darker color on hover */
   }
 
-  .hidden-init {
-    opacity: 0;
+  /* Custom styles for the tabs component */
+  .tabs {
+    @apply flex flex-col;
   }
 
-  .main-content {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+  .tabs-list {
+    @apply flex justify-start;
+  }
+
+  .tabs-trigger {
+    @apply relative inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .tabs-trigger:hover {
+    @apply bg-gray-600 text-white;
+  }
+
+  .tabs-trigger[data-state='active'] {
+    @apply bg-gray-700 text-white;
+  }
+
+  .tabs-trigger::after {
+    @apply absolute bottom-0 left-0 right-0 h-1 bg-blue-500 rounded-full;
+    content: '';
+    display: none;
+  }
+
+  .tabs-trigger[data-state='active']::after {
+    @apply block;
+  }
+}
+
+/* Component Specific Styles */
+@layer base {
+  .bg-custom-blue {
+    background-color: #1C86EE;
+  }
+
+  .hidden-init {
+    opacity: 0;
   }
 
   .video-container {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: #262B31; /* Match footer's background color */
+    background-color: #1A1C1F; /* Match background color */
   }
 
   /* Initially hide video controls */
@@ -195,4 +278,135 @@
     width: 100%;
     height: 100%;
   }
+
+  .timeline-container {
+    display: flex;
+    height: 600px; /* Adjust height based on your design */
+  }
+
+  .timeline-segment {
+    position: relative;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .timeline-segment span {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .timeline-segment .left-0 {
+    left: 10px;
+  }
+
+  .timeline-segment .right-0 {
+    right: 10px;
+  }
+    
+  .timeline-player {
+    flex-grow: 1;
+    margin-right: 16px; /* Adjust spacing between the video player and the timeline */
+  }
+
+  .video-player {
+    flex: 3;
+    padding-right: 20px;
+  }
+
+  .timeline {
+    width: 200px; /* Adjust width based on your design */
+    overflow-y: scroll;
+    position: relative;
+    background: #1f1f1f; /* Background color for the timeline */
+  }
+
+  .time-marker {
+    height: 40px; /* Adjust height based on your design */
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white; /* Text color for the time markers */
+  }
+
+  .needle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%; /* Center it vertically */
+    height: 2px;
+    background: red; /* Needle color */
+  }
+
+  video {
+    width: 100%; /* Make the video player take the full width */
+    height: auto; /* Ensure the video player maintains aspect ratio */
+  }
+
+  .vertical-timeline-element--work .vertical-timeline-element-content {
+    cursor: pointer;
+  }
+
+  .vertical-timeline-element-title {
+    color: #fff;
+  }
+
+  .vertical-timeline-element-content {
+    background: #1f2937;
+    border: 1px solid #3b82f6;
+    border-radius: 8px;
+  }
+
+  .vertical-timeline-element-content:hover {
+    background: #374151;
+  }
+
+  .vertical-timeline-element-icon {
+    background: #3b82f6;
+  }
+
+  .vertical-timeline-element-date {
+    color: #9ca3af;
+  }
+
+  .timeline-container video {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  video {
+    flex: 1; /* Make the video player take the remaining width */
+    height: 100%; /* Ensure the video player takes the full height */
+  }
+
+  .thumbnail {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .view-toggle-tabs-list {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .view-toggle-tabs-trigger {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: background-color 0.3s;
+  }
+
+  .view-toggle-tabs-trigger img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .view-toggle-tabs-trigger[data-state="active"] {
+    background-color: #2d3748; /* Example active background color */
+    border-radius: 0.375rem; /* Example border radius */
+  }
+
 }

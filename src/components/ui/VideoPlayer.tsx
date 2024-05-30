@@ -1,18 +1,42 @@
 // src/components/ui/VideoPlayer.tsx
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import Hls from 'hls.js';
 
 interface VideoPlayerProps {
-  src: string;
+  videoUrl: string;
+  currentTime: number;
+  onTimeUpdate?: (time: number) => void;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, currentTime, onTimeUpdate }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current && videoUrl) {
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(videoUrl);
+        hls.attachMedia(videoRef.current);
+      } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+        videoRef.current.src = videoUrl;
+      }
+    }
+  }, [videoUrl]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = currentTime;
+    }
+  }, [currentTime]);
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current && onTimeUpdate) {
+      onTimeUpdate(videoRef.current.currentTime);
+    }
+  };
+
   return (
-    <div className="flex justify-center items-center h-full w-full">
-      <video controls autoPlay preload="auto" className="w-full max-w-4xl">
-        <source src={src} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-    </div>
+    <video ref={videoRef} controls className="w-full" onTimeUpdate={handleTimeUpdate} />
   );
 };
 

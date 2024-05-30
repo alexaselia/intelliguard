@@ -1,25 +1,25 @@
+// src/components/ui/ViewRecordingsButton.tsx
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button'; // Adjust the path as necessary
+import { Button } from '@/components/ui/button';
 
 interface ViewRecordingsButtonProps {
-  cameraId: string; // Unique identifier for the camera
+  cameraId: string;
 }
 
 const ViewRecordingsButton: React.FC<ViewRecordingsButtonProps> = ({ cameraId }) => {
   const router = useRouter();
 
   const handleViewRecordings = () => {
-    router.push(`/camera/${cameraId}`); // Navigate to the camera's channel page
+    router.push(`/cameras/${cameraId}`);
   };
 
   return (
     <Button
       onClick={handleViewRecordings}
-      className="bg-primaryBlue text-white flex items-center hover:bg-primaryBlue-hover"
+      className="bg-primaryBlue-opacity-0 text-white flex items-center justify-center hover:bg-primaryBlue-hover text-xs md:text-sm lg:text-base px-2 md:px-4"
     >
-      <img src="/icons/clock.svg" alt="Clock Icon" className="w-4 h-4 mr-2" />
-      Ver Gravações
+      <img src="/icons/clock.svg" alt="Clock Icon" className="w-4 h-4 md:w-5 md:h-5" />
     </Button>
   );
 };

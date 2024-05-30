@@ -37,11 +37,11 @@ const Home: React.FC = () => {
           <h1 className="text-4xl font-bold text-white">Home</h1>
           <p className="text-gray-400">Mantenha-se calmo, tranquilo e protegido! Veja o que está acontecendo na sua casa.</p>
         </div>
-        <p className="text-custom-blue">
+        <p className="text-custom-blue hidden md:block">
           {formatDate(currentTime)}
         </p>
       </div>
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         <MonitoringCard />
         <EntranceCard />
         <RecentAlerts />

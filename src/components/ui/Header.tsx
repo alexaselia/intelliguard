@@ -1,9 +1,7 @@
-// src/components/ui/Header.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,11 +37,11 @@ const Header: React.FC = () => {
   }, [isDropdownOpen]);
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-16 bg-[hsl(var(--sidebar-background))] flex items-center justify-between px-4 pr-10 z-10">
+    <div className="fixed top-0 left-0 right-0 h-16 bg-[hsl(var(--sidebar-background))] flex items-center justify-between px-2 md:px-4 pr-6 md:pr-10 z-10">
       <div className="flex items-center">
-        <img src="/images/logo.svg" alt="CITITECH Logo" className="h-28 w-28 ml-5" />
+        <img src="/images/logo.svg" alt="CITITECH Logo" className="h-32 w-32 ml-2 md:ml-5" />
       </div>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 md:space-x-4">
         <button className="text-white">
           <i className="fa fa-phone"></i> {/* Placeholder for call icon */}
         </button>

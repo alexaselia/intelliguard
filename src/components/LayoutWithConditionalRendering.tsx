@@ -12,23 +12,32 @@ const LayoutWithConditionalRendering: React.FC<{
   const pathname = usePathname();
 
   const isLoginPage = pathname === "/login";
+  const isMapPage = pathname === "/mapa";
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-screen flex flex-col">
       {!isLoginPage && <Header />}
-      <div className={`flex h-full ${isLoginPage ? 'justify-center items-center' : ''}`}>
+      <div className="flex flex-grow overflow-hidden">
         {!isLoginPage && <Sidebar />}
-        <div className={`flex-grow ${!isLoginPage ? "ml-[254px] mt-16" : ""}`}>
+        <div className={`flex-grow ${!isLoginPage ? "md:ml-[254px] ml-[60px] mt-16" : ""} relative`}>
           {isLoginPage ? (
             <main className="relative h-full w-full flex justify-center items-center bg-background">
               {children}
             </main>
           ) : (
-            <ScrollArea className="h-full">
-              <main className="relative h-full">
-                {children}
-              </main>
-            </ScrollArea>
+            <>
+              {isMapPage ? (
+                <main className="relative h-full w-full overflow-hidden">
+                  {children}
+                </main>
+              ) : (
+                <ScrollArea className="h-full w-full">
+                  <main className="relative h-full w-full">
+                    {children}
+                  </main>
+                </ScrollArea>
+              )}
+            </>
           )}
         </div>
       </div>
