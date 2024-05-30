@@ -1,9 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 
-const TimelinePlayer = ({ recordings, currentSegment, currentTime }) => {
-  const videoRef = useRef(null);
-  const hls = useRef(null);
+interface TimelinePlayerProps {
+  recordings: Recording[];
+  currentSegment: number;
+  currentTime: number;
+}
+
+const TimelinePlayer: React.FC<TimelinePlayerProps> = ({ recordings, currentSegment, currentTime }) => {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const hls = useRef<Hls | null>(null);
 
   useEffect(() => {
     if (videoRef.current) {
