@@ -7,22 +7,36 @@ import ViewToggle from '@/components/ui/ViewToggle';
 import Timeline from '@/components/ui/Timeline';
 import VideoPlayer from '@/components/ui/VideoPlayer';
 
+interface Camera {
+  id: string;
+  name: string;
+  url: string;
+  // Add other relevant properties of the camera object if any
+}
+
+interface Recording {
+  path: string;
+  startTime: number;
+  endTime: number;
+  time: string; // Assuming 'time' is a string, update this type if necessary
+}
+
 const CameraChannelPage: React.FC = () => {
   const pathname = usePathname();
   const cameraId = pathname.split('/').pop();
-  const [camera, setCamera] = useState(null);
-  const [recordings, setRecordings] = useState([]);
+  const [camera, setCamera] = useState<Camera | null>(null);
+  const [recordings, setRecordings] = useState<Recording[]>([]);
   const [viewMode, setViewMode] = useState('channel');
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [selectedRecording, setSelectedRecording] = useState('');
+  const [selectedRecording, setSelectedRecording] = useState<string>('');
 
   useEffect(() => {
     const fetchCameraData = async () => {
       try {
         const response = await fetch('/api/cameras');
-        const cameras = await response.json();
-        const selectedCamera = cameras.find((cam) => cam.id === cameraId) || null;
+        const cameras: Camera[] = await response.json();
+        const selectedCamera = cameras.find((cam: Camera) => cam.id === cameraId) || null;
         setCamera(selectedCamera);
 
         if (selectedCamera) {
@@ -36,7 +50,7 @@ const CameraChannelPage: React.FC = () => {
 
             if (data.recordings.length > 0) {
               const totalDuration = data.recordings.reduce(
-                (acc, recording) => acc + (recording.endTime - recording.startTime),
+                (acc: number, recording: Recording) => acc + (recording.endTime - recording.startTime),
                 0
               );
               setDuration(totalDuration);
