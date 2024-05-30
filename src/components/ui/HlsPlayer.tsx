@@ -4,9 +4,11 @@ import Hls from 'hls.js';
 interface HlsPlayerProps {
   src: string;
   autoPlay?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-const HlsPlayer: React.FC<HlsPlayerProps> = ({ src, autoPlay = false }) => {
+const HlsPlayer: React.FC<HlsPlayerProps> = ({ src, autoPlay = false, className, style }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -66,7 +68,7 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({ src, autoPlay = false }) => {
   }, [src, autoPlay]);
 
   return (
-    <div className="video-container">
+    <div className={`video-container ${className}`} style={style}>
       <video ref={videoRef} className="w-full h-full object-cover transform scale-[1.04]" /> {/* Increase zoom */}
       {loading && <div className="loading-spinner"></div>}
     </div>
