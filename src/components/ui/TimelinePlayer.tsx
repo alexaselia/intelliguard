@@ -1,6 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import Hls from 'hls.js';
 
+// Define the Recording interface
+interface Recording {
+  path: string;
+  // Add other relevant properties if necessary
+}
+
 interface TimelinePlayerProps {
   recordings: Recording[];
   currentSegment: number;
