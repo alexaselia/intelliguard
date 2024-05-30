@@ -44,8 +44,8 @@ export async function GET() {
         const fps = row.getCell(6).value as number;
         const latitude = row.getCell(7).value as number;
         const longitude = row.getCell(8).value as number;
-        const shared = row.getCell(9).value.toString().toLowerCase() === 'true';
-        const ownership = row.getCell(10).value.toString().toLowerCase() === 'true';
+        const shared = row.getCell(9).value?.toString().toLowerCase() === 'true';
+        const ownership = row.getCell(10).value?.toString().toLowerCase() === 'true';
         const url = row.getCell(11).value?.text || row.getCell(11).value || '';
 
         console.log('Row data:', { name, id, ip, codec, size, fps, latitude, longitude, shared, ownership, url });
