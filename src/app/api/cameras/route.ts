@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import ExcelJS from 'exceljs';
+import ExcelJS, { CellValue } from 'exceljs';
 import path from 'path';
 import fs from 'fs';
 
@@ -34,6 +34,13 @@ export async function GET() {
     const sheet = workbook.worksheets[0];
     const data: CameraData[] = [];
 
+    const getCellValueAsString = (cellValue: CellValue): string => {
+      if (typeof cellValue === 'object' && cellValue !== null && 'text' in cellValue) {
+        return cellValue.text;
+      }
+      return cellValue?.toString() || '';
+    };
+
     sheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1) { // Skip header row
         const name = row.getCell(1).value as string;
@@ -46,7 +53,7 @@ export async function GET() {
         const longitude = row.getCell(8).value as number;
         const shared = row.getCell(9).value?.toString().toLowerCase() === 'true';
         const ownership = row.getCell(10).value?.toString().toLowerCase() === 'true';
-        const url = row.getCell(11).value?.text || row.getCell(11).value || '';
+        const url = getCellValueAsString(row.getCell(11).value);
 
         console.log('Row data:', { name, id, ip, codec, size, fps, latitude, longitude, shared, ownership, url });
 
