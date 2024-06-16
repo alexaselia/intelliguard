@@ -113,6 +113,7 @@ const CameraChannelPage: React.FC = () => {
               streamUrl={recording.path}
               cameraId={`${camera.id}-${index}`}
               showViewRecordingsButton={false}
+              thumbnail={camera.thumbnail}
             />
           ))}
         </div>
