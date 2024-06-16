@@ -103,6 +103,7 @@ const CameraChannelPage: React.FC = () => {
             cameraId={camera.id}
             isLive={true}
             showViewRecordingsButton={false}
+            thumbnail={camera.thumbnail}
           />
           {recordings.map((recording, index) => (
             <DynamicCameraCard
