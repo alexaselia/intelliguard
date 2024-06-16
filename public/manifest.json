@@ -2,7 +2,7 @@
   "name": "Guardião",
   "short_name": "Guardião",
   "description": "A Next.js project focused on displaying camera streams and recordings.",
-  "start_url": "/",
+  "start_url": "/login",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",

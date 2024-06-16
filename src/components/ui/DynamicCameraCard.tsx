@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import HlsPlayer from '@/components/ui/HlsPlayer';
 import ViewRecordingsButton from '@/components/ui/ViewRecordingsButton';
@@ -13,14 +13,25 @@ interface DynamicCameraCardProps {
 }
 
 const DynamicCameraCard: React.FC<DynamicCameraCardProps> = ({ name, streamUrl, cameraId, isLive, showViewRecordingsButton = true }) => {
-  console.log('Rendering DynamicCameraCard with streamUrl:', streamUrl);
+  const [isVideoError, setIsVideoError] = useState(false);
+
+  const handleError = () => {
+    setIsVideoError(true);
+  };
 
   return (
     <Card className="bg-[#262B31] p-0 cursor-pointer h-80">
       <CardContent className="relative p-0 h-3/4">
         <div className="relative bg-gray-700 rounded-lg overflow-hidden h-full flex items-center justify-center">
-          <HlsPlayer src={streamUrl} autoPlay={isLive} className="flex-grow" style={{ margin: '-1px' }} /> {/* Slight zoom effect with margin */}
-          {isLive && (
+          {isVideoError ? (
+            <div className="flex flex-col items-center justify-center w-full h-full bg-background">
+              <img src="/icons/video-slash.svg" alt="Câmera Offline" className="w-16 h-16 mb-2" />
+              <p className="text-white">Câmera Offline</p>
+            </div>
+          ) : (
+            <HlsPlayer src={streamUrl} autoPlay={isLive} className="flex-grow" style={{ margin: '-1px' }} onError={handleError} />
+          )}
+          {isLive && !isVideoError && (
             <div className="absolute top-2 left-2">
               <LiveTag />
             </div>

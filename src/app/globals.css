@@ -302,7 +302,7 @@
   .timeline-segment .right-0 {
     right: 10px;
   }
-    
+
   .timeline-player {
     flex-grow: 1;
     margin-right: 16px; /* Adjust spacing between the video player and the timeline */
@@ -407,6 +407,31 @@
   .view-toggle-tabs-trigger[data-state="active"] {
     background-color: #2d3748; /* Example active background color */
     border-radius: 0.375rem; /* Example border radius */
+  }
+
+  .fade-in {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .fade-in-visible {
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .fade-enter {
+    opacity: 0;
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transition: opacity 300ms;
+  }
+  .fade-exit {
+    opacity: 1;
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transition: opacity 300ms;
   }
 
 }

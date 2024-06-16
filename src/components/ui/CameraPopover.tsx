@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Table, TableRow, TableCell, TableBody, TableHeader } from '@/components/ui/table';
-import { ScrollArea } from '@/components/ui/scroll-area'; // Import the ScrollArea component
-import { Badge } from '@/components/ui/badge'; // Import the Badge component
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/lib/supabaseClient';
+import { useAuth } from '@/context/AuthContext';
+import { getDistance } from 'geolib';
 
 interface CameraPopoverProps {
   onSelect: (camera: any) => void;
@@ -10,23 +13,85 @@ interface CameraPopoverProps {
 }
 
 const CameraPopover: React.FC<CameraPopoverProps> = ({ onSelect, trigger }) => {
+  const { user } = useAuth();
   const [cameras, setCameras] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [settings, setSettings] = useState<{ share: boolean; share_distance: number } | null>(null);
+  const [settingsFetched, setSettingsFetched] = useState(false); // Track if settings have been fetched
 
   useEffect(() => {
-    // Fetch camera data here
-    const fetchCameras = async () => {
-      const response = await fetch('/api/read-cameras');
-      if (response.ok) {
-        const data = await response.json();
-        setCameras(data);
-      } else {
-        console.error('Failed to fetch camera data');
+    const fetchUserSettings = async () => {
+      if (!user || settingsFetched) return;
+
+      try {
+        const { data: userData, error: userError } = await supabase
+          .from('people')
+          .select('share, share_distance')
+          .eq('user_uid', user.id)
+          .single();
+
+        if (userError) {
+          console.error('Failed to fetch user settings:', userError);
+        } else {
+          setSettings(userData);
+          setSettingsFetched(true); // Set to true after fetching settings
+          console.log('User settings:', userData);
+        }
+      } catch (error) {
+        console.error('Error fetching user settings:', error);
       }
     };
 
+    const fetchCameras = async () => {
+      if (!user || !settingsFetched) return; // Wait until settings are fetched
+
+      const { data, error } = await supabase
+        .from('cameras')
+        .select('*');
+
+      if (error) {
+        console.error('Failed to fetch camera data:', error);
+      } else {
+        const categorizedCameras = data.map((camera) => ({
+          ...camera,
+          category: camera.ownership === user.id ? 'Casa' : (camera.shared ? 'Comunidade' : ''),
+        })).filter(camera => camera.category !== '');
+
+        const filteredCameras = categorizedCameras.filter((camera) => {
+          if (camera.category === 'Casa') return true;
+
+          if (camera.category === 'Comunidade') {
+            const isInUserDistance = categorizedCameras.some(userCamera => {
+              if (userCamera.ownership === user.id) {
+                const distance = getDistance(
+                  { latitude: userCamera.latitude, longitude: userCamera.longitude },
+                  { latitude: camera.latitude, longitude: camera.longitude }
+                );
+                return distance <= settings.share_distance;
+              }
+              return false;
+            });
+
+            return isInUserDistance;
+          }
+
+          return false;
+        });
+
+        // Sort cameras: Casa first, then Comunidade
+        filteredCameras.sort((a, b) => {
+          if (a.category === 'Casa' && b.category === 'Comunidade') return -1;
+          if (a.category === 'Comunidade' && b.category === 'Casa') return 1;
+          return 0;
+        });
+
+        setCameras(filteredCameras || []);
+      }
+    };
+
+    fetchUserSettings();
     fetchCameras();
-  }, []);
+  }, [user, settingsFetched]);
 
   const handleSelectCamera = (camera: any) => {
     onSelect(camera);
@@ -34,7 +99,7 @@ const CameraPopover: React.FC<CameraPopoverProps> = ({ onSelect, trigger }) => {
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
+    <Popover open={isOpen} onOpenChange={(isOpen) => { setIsOpen(isOpen); if (isOpen) setSettingsFetched(false); }}>
       <PopoverTrigger asChild>
         {trigger}
       </PopoverTrigger>
@@ -52,7 +117,7 @@ const CameraPopover: React.FC<CameraPopoverProps> = ({ onSelect, trigger }) => {
                   <TableCell>{camera.name}</TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {camera.category}
+                      {camera.category === 'Casa' ? 'Casa' : 'Comunidade'}
                     </Badge>
                   </TableCell>
                 </TableRow>

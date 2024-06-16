@@ -1,28 +1,70 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import HlsPlayer from '@/components/ui/HlsPlayer';
 import ViewRecordingsButton from '@/components/ui/ViewRecordingsButton';
+import { supabase } from '@/lib/supabaseClient';
 
-const EntranceCard: React.FC = () => {
-  const streamUrl = "http://rtmp.megaguardiao.com.br:8000/live/intebrasdanilo/index.m3u8";
-  const cameraId = "intebrasdanilo";
+interface EntranceCardProps {
+  userId: string; // Assuming userId is passed as a prop
+}
+
+const EntranceCard: React.FC<EntranceCardProps> = ({ userId }) => {
+  const [camera, setCamera] = useState<any | null>(null);
+  const [isVideoError, setIsVideoError] = useState(false);
+
+  useEffect(() => {
+    const fetchCamera = async () => {
+      try {
+        const { data: mosaicData, error: mosaicError } = await supabase
+          .from('user_mosaics')
+          .select('spot1')
+          .eq('user_id', userId)
+          .single();
+
+        if (mosaicError) throw mosaicError;
+
+        if (mosaicData && mosaicData.spot1) {
+          const { data: cameraData, error: cameraError } = await supabase
+            .from('cameras')
+            .select('name, url, camera_id')
+            .eq('camera_id', mosaicData.spot1)
+            .single();
+
+          if (cameraError) throw cameraError;
+
+          setCamera(cameraData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch camera data:', error);
+      }
+    };
+
+    fetchCamera();
+  }, [userId]);
+
+  const handleError = () => {
+    setIsVideoError(true);
+  };
 
   return (
     <Card className="bg-[#262B31] p-0 cursor-pointer h-80">
       <CardContent className="relative p-0 h-3/4">
         <div className="relative bg-gray-700 rounded-lg overflow-hidden h-full flex items-center justify-center">
-          <HlsPlayer src={streamUrl} />
+          {isVideoError || !camera ? (
+            <div className="flex flex-col items-center justify-center w-full h-full bg-background">
+              <img src="/icons/video-slash.svg" alt="Câmera Offline" className="w-16 h-16 mb-2" />
+              <p className="text-white">Câmera Offline</p>
+            </div>
+          ) : (
+            <HlsPlayer src={camera.url} autoPlay={false} className="flex-grow" style={{ margin: '-1px' }} onError={handleError} />
+          )}
         </div>
       </CardContent>
-      <CardFooter className="h-1/4 flex justify-between items-center p-2 md:p-4">
+      <CardFooter className="h-1/4 flex justify-between items-center p-4">
         <div className="text-white flex-1">
-          <h3 className="text-base md:text-lg lg:text-xl font-bold mb-1">Entrada Principal</h3>
-          <p className="text-xs md:text-sm lg:text-base text-gray-400">Eventos da porta principal</p>
+          <h3 className="text-lg md:text-base sm:text-sm font-bold mb-1">{camera?.name || 'Megabit'}</h3>
         </div>
-        <button className="text-white ml-2 text-xs md:text-sm lg:text-base">
-          <i className="fa fa-clock-o"></i>
-        </button>
-        <ViewRecordingsButton cameraId={cameraId} /> {/* Use the new button component */}
+        <ViewRecordingsButton cameraId={camera?.camera_id || 'default-camera-id'} />
       </CardFooter>
     </Card>
   );
