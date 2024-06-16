@@ -11,6 +11,7 @@ interface Camera {
   id: string;
   name: string;
   url: string;
+  thumbnail: string;
   // Add other relevant properties of the camera object if any
 }
 
