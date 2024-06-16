@@ -433,5 +433,18 @@
     opacity: 0;
     transition: opacity 300ms;
   }
+  .custom-modal {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  .modal-content {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to the modal card */
+    border-radius: 8px; /* Optional: Add border radius for a softer look */
+  }
+  .custom-overlay {
+    background: rgba(0, 0, 0, 0.75); /* Darken the overlay background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
 }

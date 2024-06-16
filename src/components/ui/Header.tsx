@@ -2,20 +2,67 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, CreditCard, Settings, LogOut } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { LogOut } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 
 const Header: React.FC = () => {
   const router = useRouter();
+  const { user } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+
+  const fetchAvatar = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('people')
+        .select('name, image')
+        .eq('user_uid', user.id)
+        .single();
+
+      if (error) {
+        console.error('Failed to fetch user settings:', error);
+      } else {
+        setUserName(data.name);
+        if (data.image) {
+          const { data: signedUrlData, error: urlError } = await supabase.storage.from('avatars').createSignedUrl(data.image, 60);
+          if (urlError) {
+            console.error('Failed to fetch image URL:', urlError);
+          } else {
+            setAvatarUrl(signedUrlData.signedUrl);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user settings:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAvatar();
+
+    const handleAvatarUpdate = () => {
+      fetchAvatar();
+    };
+
+    window.addEventListener('avatarUpdate', handleAvatarUpdate);
+
+    return () => {
+      window.removeEventListener('avatarUpdate', handleAvatarUpdate);
+    };
+  }, [user]);
 
   const handleLogout = () => {
     // Clear authentication state
@@ -50,12 +97,15 @@ const Header: React.FC = () => {
         </button>
         <DropdownMenu onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
-            <img src="/images/avatar.png" alt="User Profile" className="h-10 w-10 rounded-full cursor-pointer" />
+            <Avatar className="w-10 h-10 cursor-pointer">
+              <AvatarImage src={avatarUrl || '/images/avatar.png'} alt={userName || 'User Profile'} />
+              <AvatarFallback>{userName ? userName.charAt(0) : 'U'}</AvatarFallback>
+            </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-[#2D3343] text-white rounded-md shadow-md border border-[#1E242D]">
             <DropdownMenuLabel className="text-white">Menu</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} >
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4 text-white" />
               <span>Log out</span>
             </DropdownMenuItem>

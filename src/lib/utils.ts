@@ -53,6 +53,7 @@ export const readCamerasFromSupabase = async (): Promise<CameraLocation[]> => {
     ownership: camera.ownership,
     url: camera.url,
     category: camera.ownership ? 'Casa' : (camera.shared ? 'Comunidade' : ''),
+    thumbnail: camera.thumbnail,
   }));
 
   return cameras;

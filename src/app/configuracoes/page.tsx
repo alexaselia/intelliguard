@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -14,11 +14,15 @@ import { flexRender, ColumnDef, useReactTable, getCoreRowModel } from '@tanstack
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 interface Configuracoes {
   name: string;
   share: boolean;
   share_distance: number;
+  image: string; // Add image property
 }
 
 interface Camera {
@@ -34,6 +38,8 @@ const Configuracoes: React.FC = () => {
   const [settings, setSettings] = useState<Configuracoes | null>(null);
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [hasSharedCameras, setHasSharedCameras] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -41,30 +47,35 @@ const Configuracoes: React.FC = () => {
     }
   }, [user, loading, router]);
 
-  useEffect(() => {
-    const fetchSettings = async () => {
-      if (loading || !user) return;
+  const fetchSettings = async () => {
+    if (loading || !user) return;
 
-      try {
-        console.log('Fetching settings for user:', user.id);
-        const { data, error } = await supabase
-          .from('people')
-          .select('name, share, share_distance')
-          .eq('user_uid', user.id)
-          .single();
+    try {
+      console.log('Fetching settings for user:', user.id);
+      const { data, error } = await supabase
+        .from('people')
+        .select('name, share, share_distance, image') // Add image to select
+        .eq('user_uid', user.id)
+        .single();
 
-        if (error) {
-          console.error('Failed to fetch user settings:', error);
-        } else if (!data) {
-          console.error('No user settings found for user:', user.id);
-        } else {
-          console.log('Fetched settings:', data);
-          setSettings(data);
+      if (error) {
+        console.error('Failed to fetch user settings:', error);
+      } else if (!data) {
+        console.error('No user settings found for user:', user.id);
+      } else {
+        console.log('Fetched settings:', data);
+        setSettings(data);
+        if (data.image) {
+          const signedUrl = await fetchImageURL(data.image);
+          setAvatarUrl(signedUrl);
         }
-      } catch (error) {
-        console.error('Error fetching user settings:', error);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching user settings:', error);
+    }
+  };
+
+  useEffect(() => {
     fetchSettings();
   }, [user, loading]);
 
@@ -165,6 +176,60 @@ const Configuracoes: React.FC = () => {
     }
   };
 
+  const handleImageUpload = async (file: File) => {
+    const fileName = `${user.id}/${file.name}`;
+
+    try {
+      const { data, error } = await supabase.storage.from('avatars').upload(fileName, file);
+
+      if (error) {
+        console.error('Error uploading image:', error.message);
+        return;
+      }
+
+      if (data) {
+        console.log('File uploaded successfully:', data);
+
+        // Save the file path to the user's profile
+        const { error: updateError } = await supabase
+          .from('people')
+          .update({ image: data.path })
+          .eq('user_uid', user.id);
+
+        if (updateError) {
+          console.error('Error updating user profile with image path:', updateError.message);
+        } else {
+          console.log('User profile updated with image path:', data.path);
+
+          // Dispatch custom event to notify Header component
+          const avatarUpdateEvent = new CustomEvent('avatarUpdate');
+          window.dispatchEvent(avatarUpdateEvent);
+
+          // Refresh user settings
+          fetchSettings();
+        }
+      }
+    } catch (error) {
+      console.error('Unexpected error uploading image:', error);
+    }
+  };
+
+  const fetchImageURL = async (imagePath: string) => {
+    try {
+      const { data, error } = await supabase.storage.from('avatars').createSignedUrl(imagePath, 60);
+
+      if (error) {
+        console.error('Error fetching signed URL:', error.message);
+        return '';
+      }
+
+      return data.signedUrl;
+    } catch (error) {
+      console.error('Unexpected error fetching signed URL:', error);
+      return '';
+    }
+  };
+
   const columns: ColumnDef<Camera>[] = [
     {
       accessorKey: 'name',
@@ -235,12 +300,38 @@ const Configuracoes: React.FC = () => {
         </div>
       </div>
       <div className="space-y-6">
+        <div className="flex items-center space-x-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="w-32 h-32 cursor-pointer">
+                <AvatarImage src={avatarUrl || ''} alt={settings.name} />
+                <AvatarFallback>{settings.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => fileInputRef.current?.click()}>
+                Escolher imagem
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                handleImageUpload(e.target.files[0]);
+              }
+            }}
+          />
+        </div>
         <div>
           <label className="block text-sm font-medium text-gray-400">Nome</label>
           <p className="text-lg font-semibold text-white">{settings.name}</p>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-400">Compartilhar</label>
+          <label className="block text-sm font-medium text-gray-400">Compartilhamento</label>
           <div className="flex items-center space-x-2">
             <Switch
               id="share-switch"
@@ -251,7 +342,7 @@ const Configuracoes: React.FC = () => {
               }`}
             />
             <span className="text-sm font-medium text-gray-400">
-              {settings.share ? 'On' : 'Off'}
+              {settings.share ? 'Ligado' : 'Desligado'}
             </span>
           </div>
           <TransitionGroup>
@@ -290,6 +381,7 @@ const Configuracoes: React.FC = () => {
                     onChange={(e) => handleShareDistanceChange(Number(e.target.value))}
                     className="w-20 p-2 border border-gray-700 rounded bg-background text-white"
                   />
+                  <label className="block text-sm font-medium text-gray-400">Metros</label>
                 </div>
               </div>
             </CSSTransition>
@@ -329,7 +421,7 @@ const Configuracoes: React.FC = () => {
                       ) : (
                         <TableRow>
                           <TableCell colSpan={columns.length} className="h-24 text-center">
-                            No results.
+                            Sem resultados.
                           </TableCell>
                         </TableRow>
                       )}

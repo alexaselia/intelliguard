@@ -10,6 +10,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { getDistance } from 'geolib';
+import { Button } from '@/components/ui/button';
+import Mosaic from '@/components/ui/Mosaic';
 
 interface CameraLocation {
   id: string;
@@ -19,6 +21,7 @@ interface CameraLocation {
   shared: boolean;
   latitude: number;
   longitude: number;
+  thumbnail: string;
 }
 
 const Cameras: React.FC = () => {
@@ -29,6 +32,7 @@ const Cameras: React.FC = () => {
   const [settings, setSettings] = useState<{ share: boolean; share_distance: number } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('Casa');
   const [hasSharedCameras, setHasSharedCameras] = useState(false);
+  const [isMosaicOpen, setIsMosaicOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -111,14 +115,11 @@ const Cameras: React.FC = () => {
           if (camera.ownership === user.id) return false; // Exclude user's own cameras
 
           const isInUserDistance = casaStreams.some(userCamera => {
-            if (userCamera.ownership === user.id) {
-              const distance = getDistance(
-                { latitude: userCamera.latitude, longitude: userCamera.longitude },
-                { latitude: camera.latitude, longitude: camera.longitude }
-              );
-              return distance <= settings.share_distance;
-            }
-            return false;
+            const distance = getDistance(
+              { latitude: userCamera.latitude, longitude: userCamera.longitude },
+              { latitude: camera.latitude, longitude: camera.longitude }
+            );
+            return distance <= settings.share_distance;
           });
 
           return isInUserDistance;
@@ -163,6 +164,10 @@ const Cameras: React.FC = () => {
           <h1 className="text-2xl md:text-3xl font-bold text-white">Câmeras</h1>
           <p className="text-gray-400">Veja as câmeras ao vivo e suas gravações.</p>
         </div>
+        <Button onClick={() => setIsMosaicOpen(true)} className="bg-[#2D3343] text-white hover:bg-gray-600">
+          <img src="/icons/expand.svg" alt="Mosaico" className="w-4 h-4 mr-2" />
+          Mosaico
+        </Button>
       </div>
       <SecondaryHeader selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
       <TransitionGroup>
@@ -187,6 +192,7 @@ const Cameras: React.FC = () => {
                 name={stream.name}
                 streamUrl={stream.url}
                 cameraId={stream.id}
+                thumbnail={stream.thumbnail}
               />
             ))
           ) : (
@@ -194,8 +200,9 @@ const Cameras: React.FC = () => {
           )}
         </div>
       )}
+      {isMosaicOpen && <Mosaic onClose={() => setIsMosaicOpen(false)} />}
     </div>
   );
-}
+};
 
 export default Cameras;
