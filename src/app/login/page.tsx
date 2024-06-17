@@ -38,13 +38,13 @@ const LoginPage: React.FC = () => {
   const handleLoginClick = async () => {
     setErrorMessage(null);
 
-    const { user, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
       setErrorMessage(error.message);
       console.error('Error logging in:', error.message);
     } else {
-      console.log('User logged in:', user);
+      console.log('User logged in:', data.user);
       router.push('/?authenticated=true');
     }
   };
@@ -52,13 +52,13 @@ const LoginPage: React.FC = () => {
   const handleSignupClick = async () => {
     setErrorMessage(null);
 
-    const { user, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
 
     if (error) {
       setErrorMessage(error.message);
       console.error('Error signing up:', error.message);
     } else {
-      console.log('User signed up:', user);
+      console.log('User signed up:', data.user);
       router.push('/login');
     }
   };
