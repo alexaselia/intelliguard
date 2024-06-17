@@ -10,6 +10,7 @@ import DynamicCameraCard from '@/components/ui/DynamicCameraCard';
 import { CameraLocation } from '@/lib/utils';
 import { getDistance } from 'geolib';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabaseClient';
 import * as turf from '@turf/turf';
 
 mapboxgl.accessToken = 'your_mapbox_access_token_here';
