@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { supabase } from '@/lib/supabaseClient';
-import { useAuth } from '@/context/AuthContext'; // Use the newly created AuthContext
+import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { CameraLocation } from '@/lib/utils'; // Adjust the import path as necessary
 
@@ -36,11 +36,7 @@ const MapaPage: React.FC = () => {
           console.error('Failed to fetch camera data:', error);
         } else {
           console.log('Fetched camera data:', data);
-          const categorizedCameras = data.map((camera: CameraLocation) => ({
-            ...camera,
-            category: camera.ownership === user?.id ? 'Casa' : (camera.shared ? 'Comunidade' : '')
-          }));
-          setCameras(categorizedCameras.filter(camera => camera.category === 'Casa' || camera.shared));
+          setCameras(data);
         }
       } catch (error) {
         console.error('Error fetching camera data:', error);
