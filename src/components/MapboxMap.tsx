@@ -154,25 +154,27 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
         const circle = createCircle(center, radius);
         const opacity = 1 - (radius / maxRadius);
 
-        if (mapRef.current && mapRef.current.getSource(pulseLayerId)) {
-          (mapRef.current.getSource(pulseLayerId) as mapboxgl.GeoJSONSource).setData(circle);
-          mapRef.current.setPaintProperty(pulseLayerId, 'line-opacity', opacity);
-        } else {
-          mapRef.current.addLayer({
-            id: pulseLayerId,
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data: circle,
-            },
-            paint: {
-              'line-color': '#68799E',
-              'line-opacity': opacity,
-              'line-width': 2,
-            },
-          });
+        if (mapRef.current) {
+          if (mapRef.current.getSource(pulseLayerId)) {
+            (mapRef.current.getSource(pulseLayerId) as mapboxgl.GeoJSONSource).setData(circle);
+            mapRef.current.setPaintProperty(pulseLayerId, 'line-opacity', opacity);
+          } else {
+            mapRef.current.addLayer({
+              id: pulseLayerId,
+              type: 'line',
+              source: {
+                type: 'geojson',
+                data: circle,
+              },
+              paint: {
+                'line-color': '#68799E',
+                'line-opacity': opacity,
+                'line-width': 2,
+              },
+            });
+          }
         }
-
+        
         requestAnimationFrame(animate);
       };
 
