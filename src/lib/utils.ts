@@ -27,7 +27,7 @@ export interface CameraLocation {
   latitude: number;
   longitude: number;
   shared: boolean;
-  ownership: boolean;
+  ownership: string;
   url: string;
   category: string;
 }
