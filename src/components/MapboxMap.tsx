@@ -154,7 +154,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
         const circle = createCircle(center, radius);
         const opacity = 1 - (radius / maxRadius);
 
-        if (mapRef.current.getSource(pulseLayerId)) {
+        if (mapRef.current && mapRef.current.getSource(pulseLayerId)) {
           (mapRef.current.getSource(pulseLayerId) as mapboxgl.GeoJSONSource).setData(circle);
           mapRef.current.setPaintProperty(pulseLayerId, 'line-opacity', opacity);
         } else {
