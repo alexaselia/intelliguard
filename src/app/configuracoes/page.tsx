@@ -105,6 +105,10 @@ const Configuracoes: React.FC = () => {
 
   const handleShareChange = async (checked: boolean) => {
     if (!settings) return;
+    if (!user) {
+    console.error('User is null');
+    return;
+  }
 
     console.log('Toggling share to:', checked);
 
