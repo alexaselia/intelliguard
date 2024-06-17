@@ -13,7 +13,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import * as turf from '@turf/turf';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoidGVzdGluZ2FsZXgiLCJhIjoiY2pkazZ5d2JjMWNmMTJ4bzZnczk5a3o2ZyJ9.4RpePuCjlpUU7IQSz_Lfug';
+mapboxgl.accessToken = 'sk.eyJ1IjoidGVzdGluZ2FsZXgiLCJhIjoiY2x4aWQ2OXVtMWlvMjJtb2doMWVjZm1zayJ9.8rDEdLdn-dFnOAdnhaYMlw';
 
 interface MapboxMapProps {
   cameras: CameraLocation[];
