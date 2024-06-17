@@ -13,7 +13,7 @@ import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
 import * as turf from '@turf/turf';
 
-mapboxgl.accessToken = 'your_mapbox_access_token_here';
+mapboxgl.accessToken = 'pk.eyJ1IjoidGVzdGluZ2FsZXgiLCJhIjoiY2pkazZ5d2JjMWNmMTJ4bzZnczk5a3o2ZyJ9.4RpePuCjlpUU7IQSz_Lfug';
 
 interface MapboxMapProps {
   cameras: CameraLocation[];
@@ -174,7 +174,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
             });
           }
         }
-        
+
         requestAnimationFrame(animate);
       };
 
