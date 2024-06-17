@@ -59,7 +59,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
     if (!settings || !user) return;
 
     const fetchCasaCameras = () => {
-      const userCameras = cameras.filter(camera => camera.ownership === user?.id);
+      const userCameras = cameras.filter(camera => user && camera.ownership === user.id);
       setCasaStreams(userCameras);
     };
 
