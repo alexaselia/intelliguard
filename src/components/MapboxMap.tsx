@@ -7,35 +7,24 @@ import { Button } from '@/components/ui/button';
 import Modal from '@/components/ui/Modal';
 import CameraPopover from '@/components/ui/CameraPopover';
 import DynamicCameraCard from '@/components/ui/DynamicCameraCard';
-import { CameraLocation, readCamerasFromSupabase } from '@/lib/utils';
+import { CameraLocation } from '@/lib/utils';
 import { getDistance } from 'geolib';
 import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/lib/supabaseClient';
 import * as turf from '@turf/turf';
 
-mapboxgl.accessToken = 'pk.eyJ1IjoidGVzdGluZ2FsZXgiLCJhIjoiY2pkazZ5d2JjMWNmMTJ4bzZnczk5a3o2ZyJ9.4RpePuCjlpUU7IQSz_Lfug';
+mapboxgl.accessToken = 'your_mapbox_access_token_here';
 
-interface Camera {
-  id: string;
-  name: string;
-  latitude: number;
-  longitude: number;
-  ip: string;
-  codec: string;
-  size: string;
-  fps: number;
-  thumbnail: string;
-  url: string; // Added url property for stream URL
+interface MapboxMapProps {
+  cameras: CameraLocation[];
 }
 
-const MapboxMap: React.FC = () => {
+const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null);
+  const [selectedCamera, setSelectedCamera] = useState<CameraLocation | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const { user } = useAuth();
   const [settings, setSettings] = useState<{ share: boolean; share_distance: number } | null>(null);
-  const [cameras, setCameras] = useState<CameraLocation[]>([]);
   const [casaStreams, setCasaStreams] = useState<CameraLocation[]>([]);
   const [comunidadeStreams, setComunidadeStreams] = useState<CameraLocation[]>([]);
   const [hasSharedCameras, setHasSharedCameras] = useState(false);
@@ -62,14 +51,7 @@ const MapboxMap: React.FC = () => {
       }
     };
 
-    const fetchCameras = async () => {
-      const fetchedCameras = await readCamerasFromSupabase();
-      setCameras(fetchedCameras);
-      console.log('Fetched Cameras:', fetchedCameras);
-    };
-
     fetchUserSettings();
-    fetchCameras();
   }, [user]);
 
   useEffect(() => {
@@ -81,7 +63,6 @@ const MapboxMap: React.FC = () => {
     };
 
     const fetchComunidadeCameras = async () => {
-      // Check if the user has any shared cameras
       const userSharedCameras = cameras.filter(camera => camera.ownership === user.id && camera.shared);
 
       if (!settings.share || userSharedCameras.length === 0) {
@@ -91,7 +72,7 @@ const MapboxMap: React.FC = () => {
       }
 
       const sharedCameras = cameras.filter(camera => {
-        if (camera.ownership === user.id) return false; // Exclude user's own cameras
+        if (camera.ownership === user.id) return false;
 
         const isInUserDistance = casaStreams.some(userCamera => {
           const distance = getDistance(
@@ -132,21 +113,19 @@ const MapboxMap: React.FC = () => {
       fadeDuration: 0,
     });
 
-    // Add geocoder (search bar) to the top-left position
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
-      placeholder: 'Search here', // Adjust placeholder text
-      zoom: 16, // Adjust zoom level if needed
+      placeholder: 'Search here',
+      zoom: 16,
     });
     mapRef.current.addControl(geocoder, 'top-left');
 
     const searchBox = document.querySelector('.mapboxgl-ctrl-geocoder--input') as HTMLElement;
     if (searchBox) {
-      searchBox.style.width = '250px'; // Adjust width to make it smaller
+      searchBox.style.width = '250px';
     }
 
-    // Add navigation control (zoom and rotation) below the search bar
     mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
     const filterCameras = [...casaStreams, ...comunidadeStreams];
@@ -201,7 +180,7 @@ const MapboxMap: React.FC = () => {
 
     mapRef.current.on('load', () => {
       filterCameras.forEach((camera) => {
-        console.log('Camera Thumbnail URL:', camera.thumbnail); // Log the thumbnail URL
+        console.log('Camera Thumbnail URL:', camera.thumbnail);
 
         const el = document.createElement('div');
         el.className = 'marker';
@@ -213,7 +192,7 @@ const MapboxMap: React.FC = () => {
         el.style.border = camera.ownership === user?.id ? '2px solid #22C55E' : 'none';
         el.style.position = 'absolute';
         el.style.zIndex = '0';
-        el.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)'; // Add subtle shadow
+        el.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
 
         const marker = new mapboxgl.Marker(el)
           .setLngLat([camera.longitude, camera.latitude])
@@ -224,7 +203,6 @@ const MapboxMap: React.FC = () => {
           setModalOpen(true);
         });
 
-        // Animate pulse for all "Casa" cameras
         if (camera.ownership === user?.id && settings.share_distance) {
           animatePulse([camera.longitude, camera.latitude], settings.share_distance);
         }
