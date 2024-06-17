@@ -106,7 +106,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current!,
-      style: 'mapbox://styles/testingalex/clwgh4lz802mr01qgc3tg8tmn',
+      style: 'http://localhost:3001/mapbox-style',
       center: initialCenter,
       zoom: 3,
       pitch: 45,
