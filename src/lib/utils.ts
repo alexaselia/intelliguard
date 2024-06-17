@@ -30,6 +30,7 @@ export interface CameraLocation {
   ownership: string;
   url: string;
   category: string;
+  thumbnail: string;
 }
 
 export const readCamerasFromSupabase = async (): Promise<CameraLocation[]> => {
