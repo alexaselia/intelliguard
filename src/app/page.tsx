@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import MonitoringCardWithSelection from '@/components/ui/MonitoringCardWithSelection';
 import RecentAlerts from '@/components/ui/RecentAlertsCard';
 import SystemStatus from '@/components/ui/SystemStatusCard';
 import { useAuth } from '@/context/AuthContext';
