@@ -104,11 +104,7 @@ const Configuracoes: React.FC = () => {
   }, [user]);
 
   const handleShareChange = async (checked: boolean) => {
-    if (!settings) return;
-    if (!user) {
-    console.error('User is null');
-    return;
-  }
+    if (!settings || !user) return;
 
     console.log('Toggling share to:', checked);
 
@@ -130,7 +126,7 @@ const Configuracoes: React.FC = () => {
   };
 
   const handleShareDistanceChange = async (value: number) => {
-    if (!settings) return;
+    if (!settings || !user) return;
 
     console.log('Updating share distance to:', value);
 
@@ -152,6 +148,8 @@ const Configuracoes: React.FC = () => {
   };
 
   const handleCameraShareChange = async (cameraId: string, shared: boolean) => {
+    if (!user) return;
+
     try {
       const { error } = await supabase
         .from('cameras')
@@ -165,7 +163,7 @@ const Configuracoes: React.FC = () => {
         const { data, error: fetchError } = await supabase
           .from('cameras')
           .select('*')
-          .eq('ownership', user!.id);
+          .eq('ownership', user.id);
 
         if (fetchError) {
           console.error('Error re-fetching cameras:', fetchError);
@@ -181,6 +179,8 @@ const Configuracoes: React.FC = () => {
   };
 
   const handleImageUpload = async (file: File) => {
+    if (!user) return;
+
     const fileName = `${user.id}/${file.name}`;
 
     try {
@@ -308,8 +308,8 @@ const Configuracoes: React.FC = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="w-32 h-32 cursor-pointer">
-                <AvatarImage src={avatarUrl || ''} alt={settings.name} />
-                <AvatarFallback>{settings.name.charAt(0)}</AvatarFallback>
+                <AvatarImage src={avatarUrl || ''} alt={settings?.name || 'Avatar'} />
+                <AvatarFallback>{settings?.name ? settings.name.charAt(0) : 'U'}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -332,25 +332,25 @@ const Configuracoes: React.FC = () => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-400">Nome</label>
-          <p className="text-lg font-semibold text-white">{settings.name}</p>
+          <p className="text-lg font-semibold text-white">{settings?.name}</p>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-400">Compartilhamento</label>
           <div className="flex items-center space-x-2">
             <Switch
               id="share-switch"
-              checked={settings.share}
+              checked={settings?.share || false}
               onCheckedChange={handleShareChange}
               className={`peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 ${
-                settings.share ? 'bg-white' : 'bg-gray-400'
+                settings?.share ? 'bg-white' : 'bg-gray-400'
               }`}
             />
             <span className="text-sm font-medium text-gray-400">
-              {settings.share ? 'Ligado' : 'Desligado'}
+              {settings?.share ? 'Ligado' : 'Desligado'}
             </span>
           </div>
           <TransitionGroup>
-            {settings.share && !hasSharedCameras && (
+            {settings?.share && !hasSharedCameras && (
               <CSSTransition timeout={300} classNames="fade">
                 <Alert className="mt-4">
                   <Terminal className="h-4 w-4" />
@@ -364,13 +364,13 @@ const Configuracoes: React.FC = () => {
           </TransitionGroup>
         </div>
         <TransitionGroup>
-          {settings.share && (
+          {settings?.share && (
             <CSSTransition timeout={300} classNames="fade">
               <div>
                 <label className="block text-sm font-medium text-gray-400">Distância de Compartilhamento</label>
                 <div className="flex items-center space-x-4">
                   <Slider
-                    value={[settings.share_distance]}
+                    value={[settings?.share_distance || 0]}
                     min={50}
                     max={1000}
                     step={10}
@@ -379,7 +379,7 @@ const Configuracoes: React.FC = () => {
                   />
                   <input
                     type="number"
-                    value={settings.share_distance}
+                    value={settings?.share_distance || 0}
                     min={50}
                     max={1000}
                     onChange={(e) => handleShareDistanceChange(Number(e.target.value))}
@@ -392,7 +392,7 @@ const Configuracoes: React.FC = () => {
           )}
         </TransitionGroup>
         <TransitionGroup>
-          {settings.share && (
+          {settings?.share && (
             <CSSTransition timeout={300} classNames="fade">
               <div className="mt-6">
                 <h2 className="text-lg font-medium text-white">Minhas Câmeras</h2>
