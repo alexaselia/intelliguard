@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, forwardRef } from 'react';
 import Hls from 'hls.js';
 
 interface HlsPlayerProps {
@@ -9,8 +9,9 @@ interface HlsPlayerProps {
   onError?: () => void;
 }
 
-const HlsPlayer: React.FC<HlsPlayerProps> = ({ src, autoPlay = false, className, style, onError }) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+const HlsPlayer = forwardRef<HTMLVideoElement, HlsPlayerProps>(({ src, autoPlay = false, className, style, onError }, ref) => {
+  const internalRef = useRef<HTMLVideoElement | null>(null);
+  const videoRef = (ref as React.RefObject<HTMLVideoElement>) || internalRef;
   const [loading, setLoading] = useState(true);
   const [hlsInstance, setHlsInstance] = useState<Hls | null>(null);
 
@@ -92,6 +93,8 @@ const HlsPlayer: React.FC<HlsPlayerProps> = ({ src, autoPlay = false, className,
       {loading && <div className="loading-spinner"></div>}
     </div>
   );
-};
+});
+
+HlsPlayer.displayName = 'HlsPlayer';
 
 export default React.memo(HlsPlayer);
