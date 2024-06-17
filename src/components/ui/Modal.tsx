@@ -1,13 +1,14 @@
-// src/components/ui/Modal.tsx
 import React, { useRef } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   children: React.ReactNode;
+  className?: string;
+  overlayClassName?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onRequestClose, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onRequestClose, children, className, overlayClassName }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -20,12 +21,12 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onRequestClose, children }) => {
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 ${overlayClassName}`}
       onClick={handleOverlayClick}
     >
       <div
         ref={modalRef}
-        className="p-4 rounded shadow-lg relative"
+        className={`p-4 rounded shadow-lg relative ${className}`}
       >
         {children}
       </div>
