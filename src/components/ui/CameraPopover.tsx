@@ -60,7 +60,7 @@ const CameraPopover: React.FC<CameraPopoverProps> = ({ onSelect, trigger }) => {
         const filteredCameras = categorizedCameras.filter((camera) => {
           if (camera.category === 'Casa') return true;
 
-          if (camera.category === 'Comunidade') {
+          if (camera.category === 'Comunidade' && settings) {
             const isInUserDistance = categorizedCameras.some(userCamera => {
               if (userCamera.ownership === user.id) {
                 const distance = getDistance(
