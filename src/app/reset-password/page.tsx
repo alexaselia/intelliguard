@@ -29,17 +29,10 @@ const ResetPasswordContent: React.FC = () => {
       return;
     }
 
-    const { data: session, error: verifyError } = await supabase.auth.verifyRecovery(token);
-    if (verifyError) {
-      setErrorMessage('Error verifying token. Please try again.');
-      console.error('Error verifying token:', verifyError.message);
-      return;
-    }
-
-    const { error: updateError } = await supabase.auth.updateUser({ password });
-    if (updateError) {
-      setErrorMessage(updateError.message);
-      console.error('Error resetting password:', updateError.message);
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) {
+      setErrorMessage(error.message);
+      console.error('Error resetting password:', error.message);
     } else {
       setSuccessMessage('Password updated successfully. You can now log in with your new password.');
       setTimeout(() => router.push('/login'), 3000); // Redirect to login page after 3 seconds
