@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 
-const ResetPasswordPage: React.FC = () => {
+const ResetPasswordContent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('access_token');
@@ -68,6 +68,14 @@ const ResetPasswordPage: React.FC = () => {
         {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
       </div>
     </div>
+  );
+};
+
+const ResetPasswordPage: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 };
 
