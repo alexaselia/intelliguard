@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,8 @@ const ResetPasswordContent: React.FC = () => {
   useEffect(() => {
     if (!token || type !== 'recovery') {
       setErrorMessage('Invalid or missing token. Please try resetting your password again.');
+    } else {
+      setErrorMessage(null);
     }
   }, [token, type]);
 
