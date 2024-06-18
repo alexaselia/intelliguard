@@ -8,7 +8,7 @@ import { AuthProvider } from '@/context/AuthContext'; // Import AuthProvider
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({
+export default function RootLayout ({
   children,
 }: Readonly<{
   children: React.ReactNode;

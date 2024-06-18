@@ -15,20 +15,41 @@ import * as turf from '@turf/turf';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoidGVzdGluZ2FsZXgiLCJhIjoiY2pkazZ5d2JjMWNmMTJ4bzZnczk5a3o2ZyJ9.4RpePuCjlpUU7IQSz_Lfug';
 
-interface MapboxMapProps {
-  cameras: CameraLocation[];
-}
-
-const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
+const MapboxMap: React.FC = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [selectedCamera, setSelectedCamera] = useState<CameraLocation | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [settings, setSettings] = useState<{ share: boolean; share_distance: number } | null>(null);
   const [casaStreams, setCasaStreams] = useState<CameraLocation[]>([]);
   const [comunidadeStreams, setComunidadeStreams] = useState<CameraLocation[]>([]);
   const [hasSharedCameras, setHasSharedCameras] = useState(false);
+  const [cameras, setCameras] = useState<CameraLocation[]>([]);
+
+  useEffect(() => {
+    const fetchCameras = async () => {
+      if (loading) return;
+      if (!user) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('cameras')
+          .select('*')
+          .or(`ownership.eq.${user.id},shared.eq.true`);
+
+        if (error) {
+          console.error('Failed to fetch camera data:', error);
+        } else {
+          console.log('Fetched camera data:', data);
+          setCameras(data);
+        }
+      } catch (error) {
+        console.error('Error fetching camera data:', error);
+      }
+    };
+    fetchCameras();
+  }, [user, loading]);
 
   useEffect(() => {
     const fetchUserSettings = async () => {
@@ -194,6 +215,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
       pitch: 45,
       bearing: 0,
       fadeDuration: 0,
+      attributionControl: false
     });
 
     const geocoder = new MapboxGeocoder({
@@ -238,6 +260,14 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
     }
   };
 
+  if (loading) {
+    return <p>Loading...</p>; // Show a loading state while checking user session
+  }
+
+  if (!user) {
+    return null; // If user is not authenticated, return null to avoid rendering the page content
+  }
+
   return (
     <>
       <div ref={mapContainerRef} className="map-container w-full h-full relative" />
@@ -270,6 +300,10 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
         )}
       </Modal>
       <style jsx>{`
+        .mapboxgl-ctrl-logo {
+          display: none !important;
+        }
+
         .marker {
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         }

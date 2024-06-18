@@ -447,4 +447,8 @@
     align-items: center;
   }
 
+  .mapboxgl-ctrl-logo {
+      display: none !important;
+    }
+
 }
