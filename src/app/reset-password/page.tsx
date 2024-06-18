@@ -1,17 +1,32 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 
 const ResetPasswordPage: React.FC = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('access_token');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!token) {
+      setErrorMessage('Token not found. Please try resetting your password again.');
+    }
+  }, [token]);
 
   const handleResetPassword = async () => {
     setErrorMessage(null);
+    setSuccessMessage(null);
+
+    if (!token) {
+      setErrorMessage('Token not found. Please try resetting your password again.');
+      return;
+    }
 
     const { error } = await supabase.auth.updateUser({
       password,
@@ -21,8 +36,8 @@ const ResetPasswordPage: React.FC = () => {
       setErrorMessage(error.message);
       console.error('Error resetting password:', error.message);
     } else {
-      console.log('Password updated successfully');
-      router.push('/login');
+      setSuccessMessage('Password updated successfully. You can now log in with your new password.');
+      setTimeout(() => router.push('/login'), 3000); // Redirect to login page after 3 seconds
     }
   };
 
@@ -50,6 +65,7 @@ const ResetPasswordPage: React.FC = () => {
           </Button>
         </div>
         {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+        {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
       </div>
     </div>
   );
