@@ -14,6 +14,7 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const logoContainer = logoContainerRef.current;
@@ -65,15 +66,18 @@ const LoginPage: React.FC = () => {
 
   const handleForgotPasswordClick = async () => {
     setErrorMessage(null);
+    setSuccessMessage(null);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://vms.megaguardiao.com.br/reset-password',
+    });
 
     if (error) {
       setErrorMessage(error.message);
       console.error('Error sending password recovery email:', error.message);
     } else {
       console.log('Password recovery email sent');
-      setErrorMessage('Email para recuperação de senha enviado');
+      setSuccessMessage('Email para recuperação de senha enviado');
     }
   };
 
@@ -105,6 +109,7 @@ const LoginPage: React.FC = () => {
             onForgotPasswordClick={handleForgotPasswordClick}
           />
           {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+          {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
           <div className="text-sm text-gray-400 mt-2">
             {isSignup ? (
               <p>
