@@ -8,27 +8,29 @@ import { Button } from '@/components/ui/button';
 const ResetPasswordContent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('access_token');
+  const token = searchParams.get('token');
+  const type = searchParams.get('type');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) {
-      setErrorMessage('Token not found. Please try resetting your password again.');
+    if (!token || type !== 'recovery') {
+      setErrorMessage('Invalid or missing token. Please try resetting your password again.');
     }
-  }, [token]);
+  }, [token, type]);
 
   const handleResetPassword = async () => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    if (!token) {
-      setErrorMessage('Token not found. Please try resetting your password again.');
+    if (!token || type !== 'recovery') {
+      setErrorMessage('Invalid or missing token. Please try resetting your password again.');
       return;
     }
 
     const { error } = await supabase.auth.updateUser({
+      access_token: token,
       password,
     });
 
