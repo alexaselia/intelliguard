@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
@@ -72,7 +72,11 @@ const ResetPasswordContent: React.FC = () => {
 };
 
 const ResetPasswordPage: React.FC = () => {
-  return <ResetPasswordContent />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
+  );
 };
 
 export default ResetPasswordPage;
