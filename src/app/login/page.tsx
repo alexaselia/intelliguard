@@ -63,13 +63,27 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleForgotPasswordClick = async () => {
+    setErrorMessage(null);
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+
+    if (error) {
+      setErrorMessage(error.message);
+      console.error('Error sending password recovery email:', error.message);
+    } else {
+      console.log('Password recovery email sent');
+      setErrorMessage('Email para recuperação de senha enviado');
+    }
+  };
+
   const handleToggle = () => {
     gsap.to(cardRef.current, { autoAlpha: 0, y: -20, duration: 0.3, ease: 'power2.inOut', onComplete: () => {
       setIsSignup(!isSignup);
       setEmail('');
       setPassword('');
       setErrorMessage(null);
-      gsap.to(cardRef.current, { autoAlpha: 1, y: 40, duration: 0.3, ease: 'power2.inOut' });
+      gsap.to(cardRef.current, { autoAlpha: 1, y: 50, duration: 0.3, ease: 'power2.inOut' });
     }});
   };
 
@@ -88,9 +102,10 @@ const LoginPage: React.FC = () => {
             setPassword={setPassword}
             isSignUp={isSignup}
             setIsSignUp={setIsSignup}
+            onForgotPasswordClick={handleForgotPasswordClick}
           />
           {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-          <div className="text-sm text-gray-400 mt-4">
+          <div className="text-sm text-gray-400 mt-2">
             {isSignup ? (
               <p>
                 Já tem uma conta? <a href="#" className="text-primary-500 hover:underline" onClick={handleToggle}>Log in</a>

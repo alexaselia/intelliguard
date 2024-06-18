@@ -10,6 +10,7 @@ interface LoginCardProps {
   setPassword: (password: string) => void;
   isSignUp?: boolean;
   setIsSignUp: (isSignUp: boolean) => void;
+  onForgotPasswordClick: () => void;
 }
 
 const LoginCard: React.FC<LoginCardProps> = ({
@@ -20,8 +21,8 @@ const LoginCard: React.FC<LoginCardProps> = ({
   setPassword,
   isSignUp = false,
   setIsSignUp,
+  onForgotPasswordClick,
 }) => {
-  // Add event listener for Enter key
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
@@ -31,14 +32,13 @@ const LoginCard: React.FC<LoginCardProps> = ({
 
     document.addEventListener('keydown', handleKeyDown);
 
-    // Cleanup event listener on component unmount
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [onLoginClick]);
 
   return (
-    <Card className="bg-[#2D3343] rounded-lg p-4 shadow-none max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg flex flex-col justify-between h-full">
+    <Card className="bg-[#2D3343] rounded-lg p-2 shadow-none max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg flex flex-col justify-between h-flex">
       <div>
         <CardHeader className="p-4">
           <CardTitle className="text-gray-300">{isSignUp ? 'Inscrever-se' : 'Entrar'}</CardTitle>
@@ -74,11 +74,20 @@ const LoginCard: React.FC<LoginCardProps> = ({
                 className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               />
             </div>
-            <div>
-              <Button type="button" onClick={onLoginClick} className="w-full bg-[#1E90FF] hover:bg-[#1C86EE]">
-                {isSignUp ? 'Inscrever-se' : 'Entrar'}
-              </Button>
+            <div className="pt-3">
+              <div>
+                <Button type="button" onClick={onLoginClick} className="w-full bg-[#1E90FF] hover:bg-[#1C86EE]">
+                  {isSignUp ? 'Inscrever-se' : 'Entrar'}
+                  </Button>
+              </div>
             </div>
+            {!isSignUp && (
+              <div className="text-center">
+                <a href="#" onClick={onForgotPasswordClick} className="block text-sm font-medium hover:underline text-gray-300">
+                  Esqueceu sua senha?
+                </a>
+              </div>
+            )}
           </div>
         </CardContent>
       </div>
