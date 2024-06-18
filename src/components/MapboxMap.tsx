@@ -215,10 +215,10 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
 
     mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
-    const filterCameras = [...casaStreams, ...comunidadeStreams];
-    addMarkers(filterCameras);
-
     mapRef.current.on('load', () => {
+      const filterCameras = [...casaStreams, ...comunidadeStreams];
+      addMarkers(filterCameras);
+
       if (ownerCamera) {
         mapRef.current!.flyTo({
           center: [ownerCamera.longitude, ownerCamera.latitude],
@@ -229,7 +229,10 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
     });
 
     const intervalId = setInterval(() => {
-      addMarkers(filterCameras);
+      if (mapRef.current?.isStyleLoaded()) {
+        const filterCameras = [...casaStreams, ...comunidadeStreams];
+        addMarkers(filterCameras);
+      }
     }, 5000);
 
     return () => {
