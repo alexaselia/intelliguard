@@ -63,7 +63,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
       setCasaStreams(userCameras);
     };
 
-    const fetchComunidadeCameras = async () => {
+    const fetchComunidadeCameras = async (retryCount = 0) => {
       const userSharedCameras = cameras.filter(camera => camera.ownership === user.id && camera.shared);
 
       if (!settings.share || userSharedCameras.length === 0) {
@@ -86,8 +86,13 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
         return isInUserDistance && camera.shared;
       });
 
-      setComunidadeStreams(sharedCameras);
-      setHasSharedCameras(true);
+      if (sharedCameras.length > 0 || retryCount >= 3) {
+        setComunidadeStreams(sharedCameras);
+        setHasSharedCameras(true);
+      } else {
+        console.log(`Retrying to fetch comunidade cameras: attempt ${retryCount + 1}`);
+        setTimeout(() => fetchComunidadeCameras(retryCount + 1), 2000);
+      }
     };
 
     fetchCasaCameras();
@@ -117,7 +122,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
-      placeholder: 'Search here',
+      placeholder: 'Procurar',
       zoom: 16,
     });
     mapRef.current.addControl(geocoder, 'top-left');
