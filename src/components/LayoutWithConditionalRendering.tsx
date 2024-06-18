@@ -12,15 +12,20 @@ const LayoutWithConditionalRendering: React.FC<{
   const pathname = usePathname();
 
   const isLoginPage = pathname === "/login";
+  const isResetPasswordPage = pathname === "/reset-password";
+  const isChangePasswordPage = pathname === "/change-password";
   const isMapPage = pathname === "/mapa";
+
+  const shouldHideHeaderAndSidebar =
+    isLoginPage || isResetPasswordPage || isChangePasswordPage;
 
   return (
     <div className="h-screen flex flex-col">
-      {!isLoginPage && <Header />}
-      <div className={`flex flex-grow overflow-hidden ${isLoginPage ? "" : "mt-16"}`}>
-        {!isLoginPage && <Sidebar />}
-        <div className={`flex-grow ${!isLoginPage ? "md:ml-[254px] ml-0" : ""} relative`}>
-          {isLoginPage ? (
+      {!shouldHideHeaderAndSidebar && <Header />}
+      <div className={`flex flex-grow overflow-hidden ${shouldHideHeaderAndSidebar ? "" : "mt-16"}`}>
+        {!shouldHideHeaderAndSidebar && <Sidebar />}
+        <div className={`flex-grow ${!shouldHideHeaderAndSidebar ? "md:ml-[254px] ml-0" : ""} relative`}>
+          {shouldHideHeaderAndSidebar ? (
             <main className="relative h-full w-full flex justify-center items-center bg-background">
               {children}
             </main>

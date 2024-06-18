@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 const ResetPasswordContent: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const token = searchParams.get('token') || window.location.hash.split('=')[1];
   const type = searchParams.get('type');
 
   useEffect(() => {
