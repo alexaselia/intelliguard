@@ -11,12 +11,11 @@ const ResetPasswordContent: React.FC = () => {
 
   useEffect(() => {
     if (token && type === 'recovery') {
-      // Store the token in localStorage or a state management library
+      // Store the token in localStorage
       localStorage.setItem('recoveryToken', token);
       // Redirect to the change password page
       router.push('/change-password');
     } else {
-      // Handle the error state
       console.error('Invalid or missing token. Please try resetting your password again.');
     }
   }, [token, type, router]);

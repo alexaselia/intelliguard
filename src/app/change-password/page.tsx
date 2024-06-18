@@ -1,21 +1,30 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 
-const ChangePasswordPage: React.FC = () => {
+const ChangePasswordContent: React.FC = () => {
   const router = useRouter();
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('recoveryToken');
+    if (!storedToken) {
+      setErrorMessage('Invalid or missing token. Please try resetting your password again.');
+    } else {
+      setToken(storedToken);
+    }
+  }, []);
 
   const handleChangePassword = async () => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const token = localStorage.getItem('recoveryToken');
     if (!token) {
       setErrorMessage('Invalid or missing token. Please try resetting your password again.');
       return;
@@ -60,6 +69,14 @@ const ChangePasswordPage: React.FC = () => {
         {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
       </div>
     </div>
+  );
+};
+
+const ChangePasswordPage: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChangePasswordContent />
+    </Suspense>
   );
 };
 
