@@ -99,87 +99,6 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
     fetchComunidadeCameras();
   }, [settings, cameras, user]);
 
-  const addMarkers = (filterCameras: CameraLocation[]) => {
-    filterCameras.forEach((camera) => {
-      console.log('Camera Thumbnail URL:', camera.thumbnail);
-
-      const el = document.createElement('div');
-      el.className = 'marker';
-      el.style.backgroundImage = `url(${camera.thumbnail})`;
-      el.style.width = '32px';
-      el.style.height = '32px';
-      el.style.backgroundSize = 'cover';
-      el.style.borderRadius = '50%';
-      el.style.border = camera.ownership === user?.id ? '2px solid #22C55E' : 'none';
-      el.style.position = 'absolute';
-      el.style.zIndex = '0';
-      el.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
-
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([camera.longitude, camera.latitude])
-        .addTo(mapRef.current!);
-
-      marker.getElement().addEventListener('click', () => {
-        setSelectedCamera(camera);
-        setModalOpen(true);
-      });
-
-      if (camera.ownership === user?.id && settings?.share_distance) {
-        animatePulse([camera.longitude, camera.latitude], settings.share_distance);
-      }
-    });
-  };
-
-  const animatePulse = (center: [number, number], radiusInMeters: number) => {
-    let radius = 0;
-    const maxRadius = radiusInMeters;
-    const duration = 3000;
-    const pulseLayerId = `pulse-layer-${center[0]}-${center[1]}`;
-
-    const animate = () => {
-      radius += maxRadius / (duration / 16);
-
-      if (radius > maxRadius) {
-        radius = 0;
-      }
-
-      const circle = createCircle(center, radius);
-      const opacity = 1 - (radius / maxRadius);
-
-      if (mapRef.current) {
-        if (mapRef.current.getSource(pulseLayerId)) {
-          (mapRef.current.getSource(pulseLayerId) as mapboxgl.GeoJSONSource).setData(circle);
-          mapRef.current.setPaintProperty(pulseLayerId, 'line-opacity', opacity);
-        } else {
-          mapRef.current.addLayer({
-            id: pulseLayerId,
-            type: 'line',
-            source: {
-              type: 'geojson',
-              data: circle,
-            },
-            paint: {
-              'line-color': '#68799E',
-              'line-opacity': opacity,
-              'line-width': 2,
-            },
-          });
-        }
-      }
-
-      requestAnimationFrame(animate);
-    };
-
-    animate();
-  };
-
-  const createCircle = (center: [number, number], radiusInMeters: number) => {
-    return turf.circle(center, radiusInMeters / 1000, {
-      steps: 64,
-      units: 'kilometers',
-    });
-  };
-
   useEffect(() => {
     if (!settings) return;
 
@@ -215,9 +134,87 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
 
     mapRef.current.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
+    const filterCameras = [...casaStreams, ...comunidadeStreams];
+
+    const createCircle = (center: [number, number], radiusInMeters: number) => {
+      return turf.circle(center, radiusInMeters / 1000, {
+        steps: 64,
+        units: 'kilometers',
+      });
+    };
+
+    const animatePulse = (center: [number, number], radiusInMeters: number) => {
+      let radius = 0;
+      const maxRadius = radiusInMeters;
+      const duration = 3000;
+      const pulseLayerId = `pulse-layer-${center[0]}-${center[1]}`;
+
+      const animate = () => {
+        radius += maxRadius / (duration / 16);
+
+        if (radius > maxRadius) {
+          radius = 0;
+        }
+
+        const circle = createCircle(center, radius);
+        const opacity = 1 - (radius / maxRadius);
+
+        if (mapRef.current) {
+          if (mapRef.current.getSource(pulseLayerId)) {
+            (mapRef.current.getSource(pulseLayerId) as mapboxgl.GeoJSONSource).setData(circle);
+            mapRef.current.setPaintProperty(pulseLayerId, 'line-opacity', opacity);
+          } else {
+            mapRef.current.addLayer({
+              id: pulseLayerId,
+              type: 'line',
+              source: {
+                type: 'geojson',
+                data: circle,
+              },
+              paint: {
+                'line-color': '#68799E',
+                'line-opacity': opacity,
+                'line-width': 2,
+              },
+            });
+          }
+        }
+
+        requestAnimationFrame(animate);
+      };
+
+      animate();
+    };
+
     mapRef.current.on('load', () => {
-      const filterCameras = [...casaStreams, ...comunidadeStreams];
-      addMarkers(filterCameras);
+      filterCameras.forEach((camera) => {
+        console.log('Camera Thumbnail URL:', camera.thumbnail);
+
+        const el = document.createElement('div');
+        el.className = 'marker';
+        el.style.backgroundImage = `url(${camera.thumbnail})`;
+        el.style.width = '32px';
+        el.style.height = '32px';
+        el.style.backgroundSize = 'cover';
+        el.style.borderRadius = '50%';
+        el.style.border = camera.ownership === user?.id ? '2px solid #22C55E' : 'none';
+        el.style.position = 'absolute';
+        el.style.zIndex = '0';
+        el.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
+
+        const marker = new mapboxgl.Marker(el)
+          .setLngLat([camera.longitude, camera.latitude])
+          .addTo(mapRef.current!);
+
+        marker.getElement().addEventListener('click', () => {
+          setSelectedCamera(camera);
+          setModalOpen(true);
+        });
+
+        if (camera.ownership === user?.id && settings.share_distance) {
+          animatePulse([camera.longitude, camera.latitude], settings.share_distance);
+        }
+      });
 
       if (ownerCamera) {
         mapRef.current!.flyTo({
@@ -228,17 +225,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ cameras }) => {
       }
     });
 
-    const intervalId = setInterval(() => {
-      if (mapRef.current?.isStyleLoaded()) {
-        const filterCameras = [...casaStreams, ...comunidadeStreams];
-        addMarkers(filterCameras);
-      }
-    }, 5000);
-
-    return () => {
-      clearInterval(intervalId);
-      mapRef.current?.remove();
-    };
+    return () => mapRef.current?.remove();
   }, [casaStreams, comunidadeStreams, settings, user]);
 
   const handleSelectCamera = (camera: CameraLocation) => {
