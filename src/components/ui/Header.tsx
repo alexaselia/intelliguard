@@ -15,13 +15,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
-
 const Header: React.FC = () => {
   const router = useRouter();
   const { user } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [userName, setUserName] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
+  const [userName, setUserName] = useState<string | undefined>(undefined);
 
   const supabase = createClient(); // Create the client instance here
 
