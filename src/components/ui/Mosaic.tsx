@@ -26,6 +26,8 @@ const Mosaic: React.FC<MosaicProps> = ({ onClose }) => {
   const [settings, setSettings] = useState<{ share: boolean; share_distance: number } | null>(null);
   const [filteredStreams, setFilteredStreams] = useState<CameraLocation[]>([]);
 
+  const supabase = createClient(); // Create the client instance here
+
   useEffect(() => {
     const fetchUserSettings = async () => {
       if (!user) return;
