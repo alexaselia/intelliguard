@@ -1,13 +1,11 @@
-"use client";
+'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { login, signup, forgotPassword } from './actions';
 import LoginCard from '@/components/ui/LoginCard';
 
 const LoginPage: React.FC = () => {
-  const router = useRouter();
   const logoContainerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [isSignup, setIsSignup] = useState(false);
@@ -36,48 +34,15 @@ const LoginPage: React.FC = () => {
     }
   }, []);
 
-  const handleLoginClick = async () => {
-    setErrorMessage(null);
-
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      setErrorMessage(error.message);
-      console.error('Error logging in:', error.message);
-    } else {
-      console.log('User logged in:', data.user);
-      router.push('/?authenticated=true');
-    }
-  };
-
-  const handleSignupClick = async () => {
-    setErrorMessage(null);
-
-    const { data, error } = await supabase.auth.signUp({ email, password });
-
-    if (error) {
-      setErrorMessage(error.message);
-      console.error('Error signing up:', error.message);
-    } else {
-      console.log('User signed up:', data.user);
-      router.push('/login');
-    }
-  };
-
   const handleForgotPasswordClick = async () => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://vms.megaguardiao.com.br/reset-password',
-    });
-
-    if (error) {
-      setErrorMessage(error.message);
-      console.error('Error sending password recovery email:', error.message);
-    } else {
-      console.log('Password recovery email sent');
+    try {
+      await forgotPassword(email);
       setSuccessMessage('Email para recuperação de senha enviado');
+    } catch (error) {
+      setErrorMessage(error.message);
     }
   };
 
@@ -99,7 +64,7 @@ const LoginPage: React.FC = () => {
         </div>
         <div ref={cardRef} className="mt-20 hidden-init">
           <LoginCard
-            onLoginClick={isSignup ? handleSignupClick : handleLoginClick}
+            onLoginClick={isSignup ? signup : login}
             email={email}
             password={password}
             setEmail={setEmail}

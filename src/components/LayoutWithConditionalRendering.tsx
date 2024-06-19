@@ -1,3 +1,4 @@
+// src/components/LayoutWithConditionalRendering.tsx
 "use client";
 
 import React from "react";
@@ -11,21 +12,17 @@ const LayoutWithConditionalRendering: React.FC<{
 }> = ({ children }) => {
   const pathname = usePathname();
 
-  const isLoginPage = pathname === "/login";
-  const isResetPasswordPage = pathname === "/reset-password";
-  const isChangePasswordPage = pathname === "/change-password";
+  const isAuthPage =
+    pathname === "/login" || pathname === "/reset-password" || pathname === "/change-password";
   const isMapPage = pathname === "/mapa";
-
-  const shouldHideHeaderAndSidebar =
-    isLoginPage || isResetPasswordPage || isChangePasswordPage;
 
   return (
     <div className="h-screen flex flex-col">
-      {!shouldHideHeaderAndSidebar && <Header />}
-      <div className={`flex flex-grow overflow-hidden ${shouldHideHeaderAndSidebar ? "" : "mt-16"}`}>
-        {!shouldHideHeaderAndSidebar && <Sidebar />}
-        <div className={`flex-grow ${!shouldHideHeaderAndSidebar ? "md:ml-[254px] ml-0" : ""} relative`}>
-          {shouldHideHeaderAndSidebar ? (
+      {!isAuthPage && <Header />}
+      <div className={`flex flex-grow overflow-hidden ${isAuthPage ? "" : "mt-16"}`}>
+        {!isAuthPage && <Sidebar />}
+        <div className={`flex-grow ${!isAuthPage ? "md:ml-[254px] ml-0" : ""} relative`}>
+          {isAuthPage ? (
             <main className="relative h-full w-full flex justify-center items-center bg-background">
               {children}
             </main>

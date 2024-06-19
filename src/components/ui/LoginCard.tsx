@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 
 interface LoginCardProps {
-  onLoginClick: () => void;
+  onLoginClick: (formData: FormData) => void;
   email: string;
   password: string;
   setEmail: (email: string) => void;
@@ -26,7 +26,10 @@ const LoginCard: React.FC<LoginCardProps> = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
-        onLoginClick();
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('password', password);
+        onLoginClick(formData);
       }
     };
 
@@ -35,7 +38,13 @@ const LoginCard: React.FC<LoginCardProps> = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onLoginClick]);
+  }, [onLoginClick, email, password]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    onLoginClick(formData);
+  };
 
   return (
     <Card className="bg-[#2D3343] rounded-lg p-2 shadow-none max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg flex flex-col justify-between h-flex">
@@ -47,7 +56,7 @@ const LoginCard: React.FC<LoginCardProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent className="p-4">
-          <div className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-300">
                 Email
@@ -76,9 +85,9 @@ const LoginCard: React.FC<LoginCardProps> = ({
             </div>
             <div className="pt-3">
               <div>
-                <Button type="button" onClick={onLoginClick} className="w-full bg-[#1E90FF] hover:bg-[#1C86EE]">
+                <Button type="submit" className="w-full bg-[#1E90FF] hover:bg-[#1C86EE]">
                   {isSignUp ? 'Inscrever-se' : 'Entrar'}
-                  </Button>
+                </Button>
               </div>
             </div>
             {!isSignUp && (
@@ -88,7 +97,7 @@ const LoginCard: React.FC<LoginCardProps> = ({
                 </a>
               </div>
             )}
-          </div>
+          </form>
         </CardContent>
       </div>
     </Card>

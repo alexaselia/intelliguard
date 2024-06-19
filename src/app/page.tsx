@@ -3,13 +3,31 @@
 import React, { useEffect, useState } from 'react';
 import RecentAlerts from '@/components/ui/RecentAlertsCard';
 import SystemStatus from '@/components/ui/SystemStatusCard';
-import { useAuth } from '@/context/AuthContext';
+import { createClient } from '@/lib/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 
 const Home: React.FC = () => {
-  const { user, loading } = useAuth();
   const router = useRouter();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data.user) {
+        console.log('No user found, redirecting to login');
+        router.push('/login');
+      } else {
+        console.log('User authenticated:', data.user);
+        setUser(data.user);
+      }
+      setLoading(false);
+    };
+
+    fetchUserSession();
+  }, [router]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -17,17 +35,6 @@ const Home: React.FC = () => {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        console.log('No user found, redirecting to login');
-        router.push('/login');
-      } else {
-        console.log('User authenticated:', user);
-      }
-    }
-  }, [user, loading, router]);
 
   const formatDate = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = {

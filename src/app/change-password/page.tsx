@@ -2,7 +2,7 @@
 
 import React, { Suspense, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/lib/utils/supabase/client';
 import { Button } from '@/components/ui/button';
 
 const ChangePasswordContent: React.FC = () => {
