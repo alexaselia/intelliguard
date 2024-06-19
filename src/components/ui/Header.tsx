@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/lib/utils/supabase/client';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +15,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
+
 const Header: React.FC = () => {
   const router = useRouter();
   const { user } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userName, setUserName] = useState<string | null>(null);
+
+  const supabase = createClient(); // Create the client instance here
 
   const fetchAvatar = async () => {
     if (!user) return;
@@ -98,8 +101,8 @@ const Header: React.FC = () => {
         <DropdownMenu onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Avatar className="w-10 h-10 cursor-pointer">
-              <AvatarImage src={avatarUrl || '/images/avatar.png'} alt={userName || 'User Profile'} />
-              <AvatarFallback>{userName ? userName.charAt(0) : 'U'}</AvatarFallback>
+              <AvatarImage src={avatarUrl} alt={userName || 'User Profile'} />
+              <AvatarFallback>{userName ? userName.charAt(0) : ''}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-[#2D3343] text-white rounded-md shadow-md border border-[#1E242D]">

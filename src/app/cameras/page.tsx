@@ -1,9 +1,11 @@
+// src/app/cameras/page.tsx
+
 "use client";
 
 import React, { useEffect, useState } from 'react';
 import SecondaryHeader from '@/components/ui/SecondaryHeader';
 import DynamicCameraCard from '@/components/ui/DynamicCameraCard';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/lib/utils/supabase/client'; // Correct import
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -39,6 +41,8 @@ const Cameras: React.FC = () => {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  const supabase = createClient(); // Create the client instance here
 
   const fetchUserSettings = async () => {
     if (!user) return;

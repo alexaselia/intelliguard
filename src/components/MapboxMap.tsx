@@ -10,10 +10,12 @@ import DynamicCameraCard from '@/components/ui/DynamicCameraCard';
 import { CameraLocation } from '@/lib/utils';
 import { getDistance } from 'geolib';
 import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/lib/utils/supabase/client';
 import * as turf from '@turf/turf';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoidGVzdGluZ2FsZXgiLCJhIjoiY2pkazZ5d2JjMWNmMTJ4bzZnczk5a3o2ZyJ9.4RpePuCjlpUU7IQSz_Lfug';
+
+const supabase = createClient(); // Create the client instance here
 
 const MapboxMap: React.FC = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);

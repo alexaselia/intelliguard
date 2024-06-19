@@ -3,7 +3,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import { Table, TableRow, TableCell, TableBody, TableHeader } from '@/components/ui/table';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/lib/utils/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { getDistance } from 'geolib';
 
@@ -11,6 +11,8 @@ interface CameraPopoverProps {
   onSelect: (camera: any) => void;
   trigger: React.ReactNode;
 }
+
+const supabase = createClient(); // Create the client instance here
 
 const CameraPopover: React.FC<CameraPopoverProps> = ({ onSelect, trigger }) => {
   const { user } = useAuth();

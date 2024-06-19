@@ -8,9 +8,6 @@ interface LoginCardProps {
   password: string;
   setEmail: (email: string) => void;
   setPassword: (password: string) => void;
-  isSignUp?: boolean;
-  setIsSignUp: (isSignUp: boolean) => void;
-  onForgotPasswordClick: () => void;
 }
 
 const LoginCard: React.FC<LoginCardProps> = ({
@@ -19,9 +16,6 @@ const LoginCard: React.FC<LoginCardProps> = ({
   password,
   setEmail,
   setPassword,
-  isSignUp = false,
-  setIsSignUp,
-  onForgotPasswordClick,
 }) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -38,25 +32,13 @@ const LoginCard: React.FC<LoginCardProps> = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [onLoginClick, email, password]);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    onLoginClick(formData);
-  };
+  }, [email, password, onLoginClick]);
 
   return (
     <Card className="bg-[#2D3343] rounded-lg p-2 shadow-none max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg flex flex-col justify-between h-flex">
       <div>
-        <CardHeader className="p-4">
-          <CardTitle className="text-gray-300">{isSignUp ? 'Inscrever-se' : 'Entrar'}</CardTitle>
-          <CardDescription className="text-gray-400">
-            {isSignUp ? 'Criar uma nova conta' : 'Entre com suas credenciais'}
-          </CardDescription>
-        </CardHeader>
         <CardContent className="p-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-300">
                 Email
@@ -86,18 +68,11 @@ const LoginCard: React.FC<LoginCardProps> = ({
             <div className="pt-3">
               <div>
                 <Button type="submit" className="w-full bg-[#1E90FF] hover:bg-[#1C86EE]">
-                  {isSignUp ? 'Inscrever-se' : 'Entrar'}
+                  Entrar
                 </Button>
               </div>
             </div>
-            {!isSignUp && (
-              <div className="text-center">
-                <a href="#" onClick={onForgotPasswordClick} className="block text-sm font-medium hover:underline text-gray-300">
-                  Esqueceu sua senha?
-                </a>
-              </div>
-            )}
-          </form>
+          </div>
         </CardContent>
       </div>
     </Card>

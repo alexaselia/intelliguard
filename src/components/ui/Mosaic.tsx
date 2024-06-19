@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import HlsPlayer from '@/components/ui/HlsPlayer';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/lib/utils/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { getDistance } from 'geolib';
 

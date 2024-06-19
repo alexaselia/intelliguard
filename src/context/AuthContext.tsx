@@ -1,7 +1,9 @@
+// src/context/AuthContext.tsx
+
 "use client";
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/lib/utils/supabase/client';
 import { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextProps {
@@ -18,6 +20,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const supabase = createClient();
+
     const getSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {

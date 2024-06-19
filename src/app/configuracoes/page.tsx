@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { createClient } from '@/lib/utils/supabase/client';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { Switch } from '@/components/ui/switch';
@@ -31,6 +31,8 @@ interface Camera {
   shared: boolean;
   ownership: string;
 }
+
+const supabase = createClient(); // Create the client instance here
 
 const Configuracoes: React.FC = () => {
   const { user, loading } = useAuth();
