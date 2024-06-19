@@ -5,11 +5,12 @@ import RecentAlerts from '@/components/ui/RecentAlertsCard';
 import SystemStatus from '@/components/ui/SystemStatusCard';
 import { createClient } from '@/lib/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import { User } from '@supabase/supabase-js';
 
 const Home: React.FC = () => {
   const router = useRouter();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
