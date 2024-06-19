@@ -39,8 +39,12 @@ const LoginPage: React.FC = () => {
 
     try {
       await login(formData);
-    } catch (error) {
-      setErrorMessage(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('An unexpected error occurred');
+      }
     }
   };
 
