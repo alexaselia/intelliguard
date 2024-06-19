@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
-import { login, signup, forgotPassword } from './actions';
+import { login, signup } from './actions';
 import LoginCard from '@/components/ui/LoginCard';
 
 const LoginPage: React.FC = () => {
@@ -34,18 +34,6 @@ const LoginPage: React.FC = () => {
     }
   }, []);
 
-  const handleForgotPasswordClick = async () => {
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    try {
-      await forgotPassword(email);
-      setSuccessMessage('Email para recuperação de senha enviado');
-    } catch (error) {
-      setErrorMessage(error.message);
-    }
-  };
-
   const handleToggle = () => {
     gsap.to(cardRef.current, { autoAlpha: 0, y: -20, duration: 0.3, ease: 'power2.inOut', onComplete: () => {
       setIsSignup(!isSignup);
@@ -71,7 +59,10 @@ const LoginPage: React.FC = () => {
             setPassword={setPassword}
             isSignUp={isSignup}
             setIsSignUp={setIsSignup}
-            onForgotPasswordClick={handleForgotPasswordClick}
+            onForgotPasswordClick={() => {
+              // Temporarily remove forgotPassword functionality
+              setErrorMessage('Password recovery is temporarily disabled.');
+            }}
           />
           {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
           {successMessage && <p className="text-green-500 mt-2">{successMessage}</p>}
