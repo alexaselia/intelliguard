@@ -1,0 +1,122 @@
+[
+    {
+        "label": "car",
+        "confidence": 0.8712920546531677,
+        "bounding_box": [
+            285,
+            318,
+            791,
+            603
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.626636803150177,
+        "bounding_box": [
+            456,
+            413,
+            1257,
+            940
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.6235889196395874,
+        "bounding_box": [
+            768,
+            221,
+            907,
+            311
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.5329462289810181,
+        "bounding_box": [
+            232,
+            390,
+            392,
+            506
+        ]
+    },
+    {
+        "label": "bus",
+        "confidence": 0.4852912127971649,
+        "bounding_box": [
+            1095,
+            125,
+            1865,
+            481
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.47151291370391846,
+        "bounding_box": [
+            713,
+            219,
+            778,
+            261
+        ]
+    },
+    {
+        "label": "truck",
+        "confidence": 0.4180837869644165,
+        "bounding_box": [
+            1095,
+            124,
+            1869,
+            480
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.30655989050865173,
+        "bounding_box": [
+            631,
+            220,
+            687,
+            259
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.2675951421260834,
+        "bounding_box": [
+            231,
+            381,
+            491,
+            505
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.26377347111701965,
+        "bounding_box": [
+            578,
+            223,
+            624,
+            260
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.26232993602752686,
+        "bounding_box": [
+            228,
+            337,
+            512,
+            506
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.2527596056461334,
+        "bounding_box": [
+            632,
+            212,
+            776,
+            260
+        ]
+    }
+]

@@ -1,46 +1,49 @@
-// src/components/ui/Timeline.tsx
-import React, { useEffect, useRef } from 'react';
+// components/ui/Timeline.tsx
+"use client";
+
+import React, { useState, useEffect, useRef } from 'react';
 
 interface TimelineProps {
-  duration: number;
   currentTime: number;
-  onScroll: (scrollTop: number) => void;
+  setCurrentTime: (time: number) => void;
+  onTimeSelected: (time: number) => void;
 }
 
-const Timeline: React.FC<TimelineProps> = ({ duration, currentTime, onScroll }) => {
+const Timeline: React.FC<TimelineProps> = ({ currentTime, setCurrentTime, onTimeSelected }) => {
+  const [isScrolling, setIsScrolling] = useState(false);
   const timelineRef = useRef<HTMLDivElement>(null);
 
-  const markers = Array.from({ length: Math.ceil(duration / 600) }, (_, i) => i * 600);
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    setIsScrolling(true);
+    clearTimeout(handleScroll.timer);
+    const scrollTop = e.currentTarget.scrollTop;
+    const seconds = Math.floor(scrollTop / 20); // Assume each second corresponds to 20px of scroll
+    setCurrentTime(seconds);
+    handleScroll.timer = setTimeout(() => {
+      setIsScrolling(false);
+      onTimeSelected(seconds);
+    }, 3000);
+  };
 
   useEffect(() => {
     if (timelineRef.current) {
-      const scrollTop = (currentTime / duration) * timelineRef.current.scrollHeight;
-      timelineRef.current.scrollTop = scrollTop;
+      timelineRef.current.scrollTop = currentTime * 20;
     }
-  }, [currentTime, duration]);
-
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const newScrollTop = e.currentTarget.scrollTop;
-    onScroll(newScrollTop);
-  };
+  }, [currentTime]);
 
   return (
-    <div
-      ref={timelineRef}
-      onScroll={handleScroll}
-      className="overflow-y-scroll relative bg-gray-800 w-20"
-      style={{ height: 'calc(100vh - 100px)', border: '1px solid red' }} // Adjust height to fit your layout
-    >
-      <div
-        className="absolute left-0 w-full h-1 bg-red-500"
-        style={{ top: `${(currentTime / duration) * 100}%` }}
-      />
-      {markers.map((marker) => (
-        <div key={marker} className="block w-full text-center text-white py-1">
-          {new Date(marker * 1000).toISOString().substr(11, 8)}
-        </div>
-      ))}
-      <div style={{ height: `${markers.length * 50}px` }} /> {/* Ensure enough scrollable space */}
+    <div className="mt-4 h-96 overflow-y-scroll relative" onScroll={handleScroll} ref={timelineRef}>
+      <div className="relative w-full h-full">
+        {[...Array(60).keys()].map((second) => (
+          <div key={second} className="relative flex items-center h-20">
+            <div className="w-16 text-white text-center">{second}s</div>
+          </div>
+        ))}
+      </div>
+      <div className="absolute top-1/2 left-0 right-0 transform -translate-y-1/2 pointer-events-none">
+        <div className="relative w-full h-0.5 bg-blue-500" />
+        <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-6 bg-blue-500" />
+      </div>
     </div>
   );
 };

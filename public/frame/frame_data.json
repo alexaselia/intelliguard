@@ -1,0 +1,1068 @@
+[
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122534_0.jpg",
+        "timestamp": "20240629122534",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122536_1.jpg",
+        "timestamp": "20240629122536",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122537_2.jpg",
+        "timestamp": "20240629122537",
+        "detected_objects": [
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "person",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122538_3.jpg",
+        "timestamp": "20240629122538",
+        "detected_objects": [
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122539_4.jpg",
+        "timestamp": "20240629122539",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122540_5.jpg",
+        "timestamp": "20240629122540",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122541_6.jpg",
+        "timestamp": "20240629122541",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122542_7.jpg",
+        "timestamp": "20240629122542",
+        "detected_objects": [
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "person",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122543_8.jpg",
+        "timestamp": "20240629122543",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "person",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122544_9.jpg",
+        "timestamp": "20240629122544",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122545_10.jpg",
+        "timestamp": "20240629122545",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122546_11.jpg",
+        "timestamp": "20240629122546",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122547_12.jpg",
+        "timestamp": "20240629122547",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122548_13.jpg",
+        "timestamp": "20240629122548",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122549_14.jpg",
+        "timestamp": "20240629122549",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122550_15.jpg",
+        "timestamp": "20240629122550",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122551_16.jpg",
+        "timestamp": "20240629122551",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122552_17.jpg",
+        "timestamp": "20240629122552",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122553_18.jpg",
+        "timestamp": "20240629122553",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122554_19.jpg",
+        "timestamp": "20240629122554",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122555_20.jpg",
+        "timestamp": "20240629122555",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122556_21.jpg",
+        "timestamp": "20240629122556",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122557_22.jpg",
+        "timestamp": "20240629122557",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122558_23.jpg",
+        "timestamp": "20240629122558",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122559_24.jpg",
+        "timestamp": "20240629122559",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122600_25.jpg",
+        "timestamp": "20240629122600",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122601_26.jpg",
+        "timestamp": "20240629122601",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122602_27.jpg",
+        "timestamp": "20240629122602",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122603_28.jpg",
+        "timestamp": "20240629122603",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122604_29.jpg",
+        "timestamp": "20240629122604",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122605_30.jpg",
+        "timestamp": "20240629122605",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "truck",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122606_31.jpg",
+        "timestamp": "20240629122606",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122607_32.jpg",
+        "timestamp": "20240629122607",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "person",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122608_33.jpg",
+        "timestamp": "20240629122608",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "person"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122609_34.jpg",
+        "timestamp": "20240629122609",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122610_35.jpg",
+        "timestamp": "20240629122610",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122611_36.jpg",
+        "timestamp": "20240629122611",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122612_37.jpg",
+        "timestamp": "20240629122612",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122613_38.jpg",
+        "timestamp": "20240629122613",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122614_39.jpg",
+        "timestamp": "20240629122614",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122615_40.jpg",
+        "timestamp": "20240629122615",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122616_41.jpg",
+        "timestamp": "20240629122616",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122617_42.jpg",
+        "timestamp": "20240629122617",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122618_43.jpg",
+        "timestamp": "20240629122618",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122619_44.jpg",
+        "timestamp": "20240629122619",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122620_45.jpg",
+        "timestamp": "20240629122620",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122621_46.jpg",
+        "timestamp": "20240629122621",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122622_47.jpg",
+        "timestamp": "20240629122622",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122624_48.jpg",
+        "timestamp": "20240629122624",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122624_49.jpg",
+        "timestamp": "20240629122624",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122625_50.jpg",
+        "timestamp": "20240629122625",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122626_51.jpg",
+        "timestamp": "20240629122626",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122627_52.jpg",
+        "timestamp": "20240629122627",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122628_53.jpg",
+        "timestamp": "20240629122628",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122629_54.jpg",
+        "timestamp": "20240629122629",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122630_55.jpg",
+        "timestamp": "20240629122630",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122631_56.jpg",
+        "timestamp": "20240629122631",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122632_57.jpg",
+        "timestamp": "20240629122632",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122633_58.jpg",
+        "timestamp": "20240629122633",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "truck",
+            "car",
+            "car"
+        ]
+    },
+    {
+        "image_name": "camera_5ef9eee8b43643e496b3_20240629122634_59.jpg",
+        "timestamp": "20240629122634",
+        "detected_objects": [
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car",
+            "car"
+        ]
+    }
+]

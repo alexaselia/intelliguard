@@ -1,0 +1,42 @@
+[
+    {
+        "label": "car",
+        "confidence": 0.7030069828033447,
+        "bounding_box": [
+            1208,
+            235,
+            1408,
+            323
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.6909589767456055,
+        "bounding_box": [
+            772,
+            282,
+            985,
+            414
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.30592915415763855,
+        "bounding_box": [
+            784,
+            223,
+            919,
+            272
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.2908061742782593,
+        "bounding_box": [
+            747,
+            223,
+            806,
+            265
+        ]
+    }
+]

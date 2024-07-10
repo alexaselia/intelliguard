@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/utils/supabase/client';
 import {
@@ -12,20 +12,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { LogOut, Settings } from 'lucide-react';
 
 const Header: React.FC = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const [user, setUser] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(undefined);
   const [userName, setUserName] = useState<string | undefined>(undefined);
+  const hasFetched = useRef(false);
 
-  const supabase = createClient(); // Create the client instance here
+  const supabase = createClient(); // Use the singleton instance
 
   const fetchAvatar = async () => {
-    if (!user) return;
+    if (!user || hasFetched.current) return;
 
     try {
       const { data, error } = await supabase
@@ -47,10 +47,24 @@ const Header: React.FC = () => {
           }
         }
       }
+      hasFetched.current = true;
     } catch (error) {
       console.error('Error fetching user settings:', error);
     }
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        router.push('/login');
+      } else {
+        setUser(data.session.user);
+      }
+    };
+
+    fetchUser();
+  }, [supabase, router]);
 
   useEffect(() => {
     fetchAvatar();
@@ -66,10 +80,10 @@ const Header: React.FC = () => {
     };
   }, [user]);
 
-  const handleLogout = () => {
-    // Clear authentication state
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error('Error logging out:', error);
     sessionStorage.removeItem('authenticated');
-    // Redirect to login page
     router.push('/login');
   };
 
@@ -79,11 +93,14 @@ const Header: React.FC = () => {
     } else {
       document.body.style.overflowY = 'auto';
     }
-    // Clean up effect
     return () => {
       document.body.style.overflowY = 'auto';
     };
   }, [isDropdownOpen]);
+
+  const handleConfigClick = () => {
+    router.push('/configuracoes');
+  };
 
   return (
     <div className="fixed top-0 left-0 right-0 h-16 bg-[hsl(var(--sidebar-background))] flex items-center justify-between px-2 md:px-4 pr-6 md:pr-10 z-10">
@@ -107,9 +124,13 @@ const Header: React.FC = () => {
           <DropdownMenuContent className="w-56 bg-[#2D3343] text-white rounded-md shadow-md border border-[#1E242D]">
             <DropdownMenuLabel className="text-white">Menu</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem className="focus:bg-gray-700 focus:bg-opacity-100" onClick={handleConfigClick}>
+              <Settings className="mr-2 h-4 w-4 text-white" />
+              <span>Configurações</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="focus:bg-gray-700 focus:bg-opacity-100" onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4 text-white" />
-              <span>Log out</span>
+              <span>Sair</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

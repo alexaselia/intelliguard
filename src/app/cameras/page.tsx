@@ -1,19 +1,18 @@
-// src/app/cameras/page.tsx
-
 "use client";
 
 import React, { useEffect, useState } from 'react';
 import SecondaryHeader from '@/components/ui/SecondaryHeader';
 import DynamicCameraCard from '@/components/ui/DynamicCameraCard';
-import { createClient } from '@/lib/utils/supabase/client'; // Correct import
-import { useAuth } from '@/context/AuthContext';
+import { createClient } from '@/lib/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
+import { CircleAlert } from 'lucide-react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { getDistance } from 'geolib';
 import { Button } from '@/components/ui/button';
 import Mosaic from '@/components/ui/Mosaic';
+import Loading from '@/components/ui/Loading';
+import { motion } from 'framer-motion';
 
 interface CameraLocation {
   id: string;
@@ -27,7 +26,8 @@ interface CameraLocation {
 }
 
 const Cameras: React.FC = () => {
-  const { user, loading } = useAuth();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [casaStreams, setCasaStreams] = useState<CameraLocation[]>([]);
   const [comunidadeStreams, setComunidadeStreams] = useState<CameraLocation[]>([]);
@@ -36,13 +36,29 @@ const Cameras: React.FC = () => {
   const [hasSharedCameras, setHasSharedCameras] = useState(false);
   const [isMosaicOpen, setIsMosaicOpen] = useState(false);
 
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        console.log('No user found, redirecting to login');
+        router.push('/login');
+      } else {
+        console.log('User authenticated:', data.session.user);
+        setUser(data.session.user);
+      }
+      setTimeout(() => setLoading(false), 1000);
+    };
+
+    fetchUserSession();
+  }, [router]);
+
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login');
     }
   }, [user, loading, router]);
-
-  const supabase = createClient(); // Create the client instance here
 
   const fetchUserSettings = async () => {
     if (!user) return;
@@ -77,8 +93,12 @@ const Cameras: React.FC = () => {
       if (cameraError) {
         console.error('Failed to fetch cameras:', cameraError);
       } else {
-        setCasaStreams(cameraData);
-        console.log('Fetched Casa cameras:', cameraData);
+        const updatedCameras = cameraData.map(camera => {
+          const cachedThumbnail = localStorage.getItem(`thumbnail_${camera.id}`);
+          return { ...camera, thumbnail: cachedThumbnail || camera.thumbnail };
+        });
+        setCasaStreams(updatedCameras);
+        console.log('Fetched Casa cameras:', updatedCameras);
       }
     } catch (error) {
       console.error('Error fetching Casa cameras:', error);
@@ -88,7 +108,6 @@ const Cameras: React.FC = () => {
   const fetchComunidadeCameras = async () => {
     if (!user || !settings) return;
 
-    // Check if the user has any shared cameras
     const { data: userCameras, error: userCamerasError } = await supabase
       .from('cameras')
       .select('*')
@@ -116,7 +135,7 @@ const Cameras: React.FC = () => {
         console.error('Failed to fetch cameras:', cameraError);
       } else {
         const filteredCameras = cameraData.filter((camera: CameraLocation) => {
-          if (camera.ownership === user.id) return false; // Exclude user's own cameras
+          if (camera.ownership === user.id) return false;
 
           const isInUserDistance = casaStreams.some(userCamera => {
             const distance = getDistance(
@@ -127,6 +146,9 @@ const Cameras: React.FC = () => {
           });
 
           return isInUserDistance;
+        }).map(camera => {
+          const cachedThumbnail = localStorage.getItem(`thumbnail_${camera.id}`);
+          return { ...camera, thumbnail: cachedThumbnail || camera.thumbnail };
         });
 
         setComunidadeStreams(filteredCameras);
@@ -150,7 +172,7 @@ const Cameras: React.FC = () => {
   }, [selectedCategory, settings, casaStreams]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   if (!user) {
@@ -163,22 +185,33 @@ const Cameras: React.FC = () => {
 
   return (
     <div className="p-4 md:p-6 pt-4 md:pt-6">
-      <div className="flex justify-between items-center mb-1 md:mb-6">
+      <motion.div
+        className="flex justify-between items-center mb-1 md:mb-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-white">Câmeras</h1>
-          <p className="text-gray-400">Veja as câmeras ao vivo e suas gravações.</p>
+          <p className="text-1xl md:text-1xl text-gray-400">Ao vivo e suas gravações.</p>
         </div>
         <Button onClick={() => setIsMosaicOpen(true)} className="bg-[#2D3343] text-white hover:bg-gray-600">
           <img src="/icons/expand.svg" alt="Mosaico" className="w-4 h-4 mr-2" />
           Mosaico
         </Button>
-      </div>
-      <SecondaryHeader selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
+      >
+        <SecondaryHeader selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
+      </motion.div>
       <TransitionGroup>
         {shouldShowAlert && (
           <CSSTransition timeout={300} classNames="fade">
             <Alert className="mt-4">
-              <Terminal className="h-4 w-4" />
+              <CircleAlert className="h-4 w-4" />
               <AlertTitle>Atenção!</AlertTitle>
               <AlertDescription>
                 Para ver câmeras compartilhadas, você precisa ter ao menos uma câmera marcada como compartilhada. Vá em <a href="/configuracoes" className="underline">Configurações</a> para ajustar suas preferências.
@@ -188,21 +221,28 @@ const Cameras: React.FC = () => {
         )}
       </TransitionGroup>
       {!shouldShowAlert && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 1 }}
+        >
           {filteredStreams.length > 0 ? (
             filteredStreams.map((stream) => (
-              <DynamicCameraCard
-                key={stream.id}
-                name={stream.name}
-                streamUrl={stream.url}
-                cameraId={stream.id}
-                thumbnail={stream.thumbnail}
-              />
+              <div key={stream.id} className="h-[320px] md:h-[300px] xl:h-[300px]">
+                <DynamicCameraCard
+                  name={stream.name}
+                  streamUrl={stream.url}
+                  cameraId={stream.id}
+                  thumbnail={stream.thumbnail}
+                  showViewRecordingsButton={selectedCategory === 'Casa'} // Pass the prop here
+                />
+              </div>
             ))
           ) : (
             <p className="text-white">No streams available.</p>
           )}
-        </div>
+        </motion.div>
       )}
       {isMosaicOpen && <Mosaic onClose={() => setIsMosaicOpen(false)} />}
     </div>

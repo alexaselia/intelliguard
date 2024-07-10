@@ -2,21 +2,13 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/lib/utils/supabase/client';
-import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { flexRender, ColumnDef, useReactTable, getCoreRowModel } from '@tanstack/react-table';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Checkbox } from '@/components/ui/checkbox';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+import AvatarUploader from '@/components/ui/settings/AvatarUploader';
+import UserSettings from '@/components/ui/settings/UserSettings';
+import CameraSettings from '@/components/ui/settings/CameraSettings';
+import ShareSettings from '@/components/ui/settings/ShareSettings';
+import Loading from '@/components/ui/Loading'; // Adjust the path accordingly
+import { motion } from 'framer-motion';
 
 interface Configuracoes {
   name: string;
@@ -32,25 +24,38 @@ interface Camera {
   ownership: string;
 }
 
-const supabase = createClient(); // Create the client instance here
+const supabase = createClient(); // Use the singleton instance
 
-const Configuracoes: React.FC = () => {
-  const { user, loading } = useAuth();
+const ConfiguracoesPage: React.FC = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [settings, setSettings] = useState<Configuracoes | null>(null);
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [hasSharedCameras, setHasSharedCameras] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const hasFetchedSettings = useRef(false);
+  const hasFetchedCameras = useRef(false);
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
+    const fetchUserSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        console.log('No user found, redirecting to login');
+        router.push('/login');
+      } else {
+        console.log('User authenticated:', data.session.user);
+        setUser(data.session.user);
+      }
+      // Add an extra delay before ending the loading state
+      setTimeout(() => setLoading(false), 1000); // 1 second delay
+    };
+
+    fetchUserSession();
+  }, [router]);
 
   const fetchSettings = async () => {
-    if (loading || !user) return;
+    if (loading || !user || hasFetchedSettings.current) return;
 
     try {
       console.log('Fetching settings for user:', user.id);
@@ -71,6 +76,7 @@ const Configuracoes: React.FC = () => {
           const signedUrl = await fetchImageURL(data.image);
           setAvatarUrl(signedUrl);
         }
+        hasFetchedSettings.current = true;
       }
     } catch (error) {
       console.error('Error fetching user settings:', error);
@@ -83,7 +89,7 @@ const Configuracoes: React.FC = () => {
 
   useEffect(() => {
     const fetchCameras = async () => {
-      if (!user) return;
+      if (!user || hasFetchedCameras.current) return;
 
       try {
         const { data, error } = await supabase
@@ -97,6 +103,7 @@ const Configuracoes: React.FC = () => {
           setCameras(data);
           const shared = data.some((camera: Camera) => camera.shared);
           setHasSharedCameras(shared);
+          hasFetchedCameras.current = true;
         }
       } catch (error) {
         console.error('Error fetching cameras:', error);
@@ -236,34 +243,8 @@ const Configuracoes: React.FC = () => {
     }
   };
 
-  const columns: ColumnDef<Camera>[] = [
-    {
-      accessorKey: 'name',
-      header: 'Câmeras',
-      cell: ({ row }) => <div>{row.getValue('name')}</div>,
-    },
-    {
-      accessorKey: 'shared',
-      header: 'Compartilhado',
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getValue('shared')}
-          onCheckedChange={(value) =>
-            handleCameraShareChange(row.original.id, value as boolean)
-          }
-        />
-      ),
-    },
-  ];
-
-  const table = useReactTable({
-    data: cameras,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   if (loading || !settings) {
-    return <p>Loading...</p>;
+    return <Loading />; // Show custom loading state while checking user session
   }
 
   console.log('Current settings:', settings);
@@ -299,148 +280,38 @@ const Configuracoes: React.FC = () => {
           transition: opacity 300ms, transform 300ms;
         }
       `}</style>
-      <div className="flex justify-between items-center mb-6">
+      <motion.div
+        className="flex justify-between items-center mb-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div>
-          <h1 className="text-3xl font-bold text-white">Configurações</h1>
-          <p className="text-gray-400">Gerencie suas configurações de usuário.</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-white">Configurações</h1>
+          <p className="text-gray-400">Meu perfil</p>
         </div>
-      </div>
-      <div className="space-y-6">
-        <div className="flex items-center space-x-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Avatar className="w-32 h-32 cursor-pointer">
-                <AvatarImage src={avatarUrl || ''} alt={settings?.name || 'Avatar'} />
-                <AvatarFallback>{settings?.name ? settings.name.charAt(0) : 'U'}</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onSelect={() => fileInputRef.current?.click()}>
-                Escolher imagem
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={(e) => {
-              if (e.target.files && e.target.files[0]) {
-                handleImageUpload(e.target.files[0]);
-              }
-            }}
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-400">Nome</label>
-          <p className="text-lg font-semibold text-white">{settings?.name}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-400">Compartilhamento</label>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="share-switch"
-              checked={settings?.share || false}
-              onCheckedChange={handleShareChange}
-              className={`peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 ${
-                settings?.share ? 'bg-white' : 'bg-gray-400'
-              }`}
-            />
-            <span className="text-sm font-medium text-gray-400">
-              {settings?.share ? 'Ligado' : 'Desligado'}
-            </span>
-          </div>
-          <TransitionGroup>
-            {settings?.share && !hasSharedCameras && (
-              <CSSTransition timeout={300} classNames="fade">
-                <Alert className="mt-4">
-                  <Terminal className="h-4 w-4" />
-                  <AlertTitle>Atenção!</AlertTitle>
-                  <AlertDescription>
-                    Para ver as câmeras da comunidade, você precisa compartilhar ao menos uma câmera própria. Ligue o compartilhamento de alguma câmera logo abaixo. (:
-                  </AlertDescription>
-                </Alert>
-              </CSSTransition>
-            )}
-          </TransitionGroup>
-        </div>
-        <TransitionGroup>
-          {settings?.share && (
-            <CSSTransition timeout={300} classNames="fade">
-              <div>
-                <label className="block text-sm font-medium text-gray-400">Distância de Compartilhamento</label>
-                <div className="flex items-center space-x-4">
-                  <Slider
-                    value={[settings?.share_distance || 0]}
-                    min={50}
-                    max={1000}
-                    step={10}
-                    className="w-[60%]"
-                    onValueChange={(values) => handleShareDistanceChange(values[0])}
-                  />
-                  <input
-                    type="number"
-                    value={settings?.share_distance || 0}
-                    min={50}
-                    max={1000}
-                    onChange={(e) => handleShareDistanceChange(Number(e.target.value))}
-                    className="w-20 p-2 border border-gray-700 rounded bg-background text-white"
-                  />
-                  <label className="block text-sm font-medium text-gray-400">Metros</label>
-                </div>
-              </div>
-            </CSSTransition>
-          )}
-        </TransitionGroup>
-        <TransitionGroup>
-          {settings?.share && (
-            <CSSTransition timeout={300} classNames="fade">
-              <div className="mt-6">
-                <h2 className="text-lg font-medium text-white">Minhas Câmeras</h2>
-                <div className="rounded-md mt-4">
-                  <Table>
-                    <TableHeader>
-                      {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                          {headerGroup.headers.map((header) => (
-                            <TableHead key={header.id}>
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(header.column.columnDef.header, header.getContext())}
-                            </TableHead>
-                          ))}
-                        </TableRow>
-                      ))}
-                    </TableHeader>
-                    <TableBody>
-                      {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                          <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                            {row.getVisibleCells().map((cell) => (
-                              <TableCell key={cell.id}>
-                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        ))
-                      ) : (
-                        <TableRow>
-                          <TableCell colSpan={columns.length} className="h-24 text-center">
-                            Sem resultados.
-                          </TableCell>
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            </CSSTransition>
-          )}
-        </TransitionGroup>
-      </div>
+      </motion.div>
+      <motion.div
+        className="space-y-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
+      >
+        <AvatarUploader avatarUrl={avatarUrl} userName={settings?.name || 'User'} onImageUpload={handleImageUpload} />
+        <UserSettings userName={settings?.name || 'User'} />
+        <ShareSettings
+          share={settings?.share || false}
+          shareDistance={settings?.share_distance || 0}
+          hasSharedCameras={hasSharedCameras}
+          onShareChange={handleShareChange}
+          onShareDistanceChange={handleShareDistanceChange}
+        />
+        {settings?.share && (
+          <CameraSettings cameras={cameras} onCameraShareChange={handleCameraShareChange} />
+        )}
+      </motion.div>
     </div>
   );
 };
 
-export default Configuracoes;
+export default ConfiguracoesPage;

@@ -3,30 +3,62 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import HlsPlayer from '@/components/ui/HlsPlayer';
 import ViewRecordingsButton from '@/components/ui/ViewRecordingsButton';
 import LiveTag from './LiveTag';
+import { createClient } from '@/lib/utils/supabase/client';
 
 interface DynamicCameraCardProps {
   name: string;
   streamUrl: string;
   cameraId: string;
-  thumbnail: string; // Add thumbnail prop
+  thumbnail: string;
   isLive?: boolean;
-  showViewRecordingsButton?: boolean; // New prop to control the visibility of the button
+  showViewRecordingsButton?: boolean; // Prop to control the visibility of the button
 }
+
+const supabase = createClient();
 
 const DynamicCameraCard: React.FC<DynamicCameraCardProps> = ({ name, streamUrl, cameraId, thumbnail, isLive, showViewRecordingsButton = true }) => {
   const [isVideoError, setIsVideoError] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isOnline, setIsOnline] = useState(true); // State to track if the camera is online
+  const [retryCount, setRetryCount] = useState(0); // State to track retry count
+  const maxRetries = 3; // Maximum number of retries
+  const retryDelay = 3000; // Delay between retries in milliseconds (3 seconds)
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handleError = () => {
-    setIsVideoError(true);
+  const handleError = async () => {
+    if (retryCount < maxRetries) {
+      setRetryCount(prevRetryCount => prevRetryCount + 1);
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.load();
+          videoRef.current.play();
+        }
+      }, retryDelay);
+    } else {
+      setIsVideoError(true);
+      await updateCameraStatus(false); // Update status to offline in Supabase
+    }
   };
 
   const handlePlayClick = () => {
     setIsPlaying(true);
+    setRetryCount(0); // Reset retry count when play is clicked
     if (videoRef.current) {
       videoRef.current.currentTime = videoRef.current.duration; // Seek to the end to start from the most recent point
       videoRef.current.play();
+    }
+  };
+
+  const updateCameraStatus = async (status: boolean) => {
+    try {
+      const { error } = await supabase.from('cameras').update({ online: status }).eq('id', cameraId);
+      if (error) {
+        console.error('Failed to update camera status:', error);
+      } else {
+        console.log(`Camera ${cameraId} status updated to ${status}`);
+      }
+    } catch (error) {
+      console.error('Error updating camera status:', error);
     }
   };
 
@@ -36,11 +68,31 @@ const DynamicCameraCard: React.FC<DynamicCameraCardProps> = ({ name, streamUrl, 
     }
   }, [isPlaying]);
 
+  useEffect(() => {
+    const checkCameraStatus = async () => {
+      try {
+        const response = await fetch(streamUrl, { method: 'HEAD' });
+        if (!response.ok) {
+          setIsOnline(false);
+          await updateCameraStatus(false); // Update status to offline in Supabase
+        } else {
+          setIsOnline(true);
+          await updateCameraStatus(true); // Update status to online in Supabase
+        }
+      } catch (error) {
+        setIsOnline(false);
+        await updateCameraStatus(false); // Update status to offline in Supabase
+      }
+    };
+
+    checkCameraStatus();
+  }, [streamUrl]);
+
   return (
     <Card className="bg-[#262B31] p-0 cursor-pointer h-80">
       <CardContent className="relative p-0 h-3/4">
         <div className="relative bg-background-opacity-100 rounded-lg overflow-hidden h-full flex items-center justify-center">
-          {isVideoError ? (
+          {!isOnline || isVideoError ? (
             <div className="flex flex-col items-center justify-center w-full h-full bg-background">
               <img src="/icons/video-slash.svg" alt="Câmera Offline" className="w-16 h-16 mb-2" />
               <p className="text-white">Câmera Offline</p>
@@ -74,8 +126,8 @@ const DynamicCameraCard: React.FC<DynamicCameraCardProps> = ({ name, streamUrl, 
       </CardContent>
       <CardFooter className="h-1/4 flex justify-between items-center p-4">
         <div className="text-white flex-1">
-          <h3 className="text-lg md:text-base sm:text-sm font-bold mb-1">{name}</h3> {/* Responsive text size */}
-          <p className="text-gray-400 text-sm md:text-xs sm:text-[0.75rem]">Eventos da porta principal</p> {/* Responsive text size */}
+          <h3 className="text-lg md:text-base sm:text-sm font-bold mb-1">{name}</h3>
+          <p className="text-gray-400 text-sm md:text-xs sm:text-[0.75rem]">Eventos da porta principal</p>
         </div>
         {showViewRecordingsButton && <ViewRecordingsButton cameraId={cameraId} />}
       </CardFooter>

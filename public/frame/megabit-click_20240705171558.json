@@ -1,0 +1,112 @@
+[
+    {
+        "label": "car",
+        "confidence": 0.8562157154083252,
+        "bounding_box": [
+            353,
+            383,
+            957,
+            687
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.8031930923461914,
+        "bounding_box": [
+            840,
+            238,
+            1032,
+            344
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.7940664291381836,
+        "bounding_box": [
+            433,
+            402,
+            1258,
+            933
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.6086077094078064,
+        "bounding_box": [
+            1207,
+            241,
+            1400,
+            328
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.5688067078590393,
+        "bounding_box": [
+            232,
+            398,
+            383,
+            503
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.5402973890304565,
+        "bounding_box": [
+            750,
+            215,
+            840,
+            270
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.5081121921539307,
+        "bounding_box": [
+            283,
+            324,
+            767,
+            571
+        ]
+    },
+    {
+        "label": "person",
+        "confidence": 0.46865445375442505,
+        "bounding_box": [
+            613,
+            283,
+            656,
+            324
+        ]
+    },
+    {
+        "label": "person",
+        "confidence": 0.4484099745750427,
+        "bounding_box": [
+            667,
+            283,
+            705,
+            332
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.38425126671791077,
+        "bounding_box": [
+            713,
+            217,
+            761,
+            261
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.2673864960670471,
+        "bounding_box": [
+            630,
+            213,
+            722,
+            258
+        ]
+    }
+]

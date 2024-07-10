@@ -61,3 +61,29 @@ export const readCamerasFromSupabase = async (): Promise<CameraLocation[]> => {
 
   return cameras;
 };
+
+export const getUserPlan = async (userId: string) => {
+  const { data: userData, error: userError } = await supabase
+    .from('people')
+    .select('plan')
+    .eq('user_uid', userId)
+    .single();
+
+  if (userError) {
+    console.error('Failed to fetch user plan:', userError);
+    return null;
+  }
+
+  const { data: planData, error: planError } = await supabase
+    .from('plans')
+    .select('capture_duration_days')
+    .eq('plan_id', userData.plan)
+    .single();
+
+  if (planError) {
+    console.error('Failed to fetch plan details:', planError);
+    return null;
+  }
+
+  return planData.capture_duration_days;
+};

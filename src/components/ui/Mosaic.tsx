@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import HlsPlayer from '@/components/ui/HlsPlayer';
 import { createClient } from '@/lib/utils/supabase/client';
-import { useAuth } from '@/context/AuthContext';
 import { getDistance } from 'geolib';
 
 interface CameraLocation {
@@ -20,13 +19,29 @@ interface MosaicProps {
 }
 
 const Mosaic: React.FC<MosaicProps> = ({ onClose }) => {
-  const { user } = useAuth();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [casaStreams, setCasaStreams] = useState<CameraLocation[]>([]);
   const [comunidadeStreams, setComunidadeStreams] = useState<CameraLocation[]>([]);
   const [settings, setSettings] = useState<{ share: boolean; share_distance: number } | null>(null);
   const [filteredStreams, setFilteredStreams] = useState<CameraLocation[]>([]);
 
   const supabase = createClient(); // Create the client instance here
+
+  useEffect(() => {
+    const fetchUserSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        console.log('No user found, redirecting to login');
+      } else {
+        console.log('User authenticated:', data.session.user);
+        setUser(data.session.user);
+      }
+      setLoading(false);
+    };
+
+    fetchUserSession();
+  }, []);
 
   useEffect(() => {
     const fetchUserSettings = async () => {
@@ -72,8 +87,10 @@ const Mosaic: React.FC<MosaicProps> = ({ onClose }) => {
       }
     };
 
-    fetchUserSettings();
-    fetchCameras();
+    if (user) {
+      fetchUserSettings();
+      fetchCameras();
+    }
   }, [user]);
 
   useEffect(() => {

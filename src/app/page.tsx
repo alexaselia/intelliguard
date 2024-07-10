@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import RecentAlerts from '@/components/ui/RecentAlertsCard';
-import SystemStatus from '@/components/ui/SystemStatusCard';
+import UserCamerasStatusCard from '@/components/ui/UserCamerasStatusCard';
+import UserPlanCard from '@/components/ui/UserPlanCard';
 import { createClient } from '@/lib/utils/supabase/client';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
+import Loading from '@/components/ui/Loading'; // Adjust the path accordingly
+import { motion } from 'framer-motion';
 
 const Home: React.FC = () => {
-  const router = useRouter();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,19 +17,20 @@ const Home: React.FC = () => {
   useEffect(() => {
     const fetchUserSession = async () => {
       const supabase = createClient();
-      const { data, error } = await supabase.auth.getUser();
-      if (error || !data.user) {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
         console.log('No user found, redirecting to login');
-        router.push('/login');
+        redirect('/login');
       } else {
-        console.log('User authenticated:', data.user);
-        setUser(data.user);
+        console.log('User authenticated:', data.session.user);
+        setUser(data.session.user);
       }
-      setLoading(false);
+      // Add an extra delay before ending the loading state
+      setTimeout(() => setLoading(false), 1000); // 1 second delay
     };
 
     fetchUserSession();
-  }, [router]);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,7 +54,7 @@ const Home: React.FC = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>; // Show a loading state while checking user session
+    return <Loading />; // Show custom loading state while checking user session
   }
 
   if (!user) {
@@ -60,16 +62,26 @@ const Home: React.FC = () => {
   }
 
   return (
-    <div className="p-6 pt-4">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-4 md:p-6 pt-4 md:pt-6">
+      <motion.div
+        className="flex justify-between items-center mb-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-white">Home</h1>
         </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <RecentAlerts />
-        <SystemStatus />
-      </div>
+      </motion.div>
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 gap-10"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
+      >
+        <UserCamerasStatusCard user={user} />
+        <UserPlanCard user={user} />
+      </motion.div>
     </div>
   );
 };

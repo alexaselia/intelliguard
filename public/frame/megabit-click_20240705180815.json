@@ -1,0 +1,82 @@
+[
+    {
+        "label": "car",
+        "confidence": 0.8901175260543823,
+        "bounding_box": [
+            1342,
+            276,
+            1683,
+            449
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.8066278100013733,
+        "bounding_box": [
+            449,
+            433,
+            1254,
+            935
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.6372451186180115,
+        "bounding_box": [
+            1207,
+            236,
+            1412,
+            330
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.6303532123565674,
+        "bounding_box": [
+            240,
+            372,
+            899,
+            732
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.5126482844352722,
+        "bounding_box": [
+            768,
+            273,
+            1008,
+            403
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.4247225821018219,
+        "bounding_box": [
+            244,
+            469,
+            417,
+            700
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.40561240911483765,
+        "bounding_box": [
+            577,
+            211,
+            685,
+            264
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.36804449558258057,
+        "bounding_box": [
+            284,
+            323,
+            801,
+            521
+        ]
+    }
+]

@@ -1,0 +1,12 @@
+[
+    {
+        "label": "motorcycle",
+        "confidence": 0.522499144077301,
+        "bounding_box": [
+            1474,
+            325,
+            1632,
+            441
+        ]
+    }
+]

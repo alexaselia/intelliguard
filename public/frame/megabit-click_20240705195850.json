@@ -1,0 +1,92 @@
+[
+    {
+        "label": "car",
+        "confidence": 0.6583117842674255,
+        "bounding_box": [
+            1208,
+            235,
+            1404,
+            324
+        ]
+    },
+    {
+        "label": "person",
+        "confidence": 0.6389702558517456,
+        "bounding_box": [
+            604,
+            284,
+            646,
+            411
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.5211820006370544,
+        "bounding_box": [
+            1498,
+            276,
+            1713,
+            378
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.5145003795623779,
+        "bounding_box": [
+            1827,
+            320,
+            1919,
+            462
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.5049520134925842,
+        "bounding_box": [
+            906,
+            223,
+            1032,
+            284
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.4817611873149872,
+        "bounding_box": [
+            780,
+            217,
+            847,
+            273
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.4135144054889679,
+        "bounding_box": [
+            952,
+            225,
+            1031,
+            284
+        ]
+    },
+    {
+        "label": "truck",
+        "confidence": 0.3728342652320862,
+        "bounding_box": [
+            1500,
+            276,
+            1720,
+            378
+        ]
+    },
+    {
+        "label": "car",
+        "confidence": 0.2633958160877228,
+        "bounding_box": [
+            557,
+            230,
+            617,
+            272
+        ]
+    }
+]

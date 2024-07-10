@@ -2,26 +2,32 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { createClient } from '@/lib/utils/supabase/client';
 import MenuItem from './MenuItem';
 
 const Sidebar: React.FC = () => {
-  const { user, loading } = useAuth();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
 
+  const supabase = createClient();
+
   const menuItems = [
     { name: 'Home', href: '/', description: 'Seu painel geral.', iconPath: '/icons/home.svg' },
-    { name: 'Câmeras', href: '/cameras', description: 'Assista ao vivo e acesse gravações.', iconPath: '/icons/cameras.svg' },
-    { name: 'Mapa', href: '/mapa', description: 'Veja as câmeras em um mapa.', iconPath: '/icons/map.svg' },
+    { name: 'Câmeras', href: '/cameras', description: 'Ao vivo e gravações.', iconPath: '/icons/cameras.svg' },
+    { name: 'Mapa', href: '/mapa', description: 'Câmeras em um mapa.', iconPath: '/icons/map.svg' },
     { name: 'Configurações', href: '/configuracoes', description: 'Ajuste suas preferências.', iconPath: '/icons/configuracoes.svg' },
   ];
+
+  const [currentIndex, setCurrentIndex] = useState(menuItems.findIndex(item => item.href === pathname));
 
   const updateIndicator = () => {
     const activeIndex = menuItems.findIndex(
       (item) => pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
     );
+    setCurrentIndex(activeIndex);
     if (activeIndex !== -1) {
       const activeButton = document.getElementById(`menu-item-${activeIndex}`);
       if (activeButton) {
@@ -31,6 +37,20 @@ const Sidebar: React.FC = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error || !data.session) {
+        setUser(null);
+      } else {
+        setUser(data.session.user);
+      }
+      setLoading(false);
+    };
+
+    fetchUser();
+  }, [supabase]);
 
   useEffect(() => {
     updateIndicator();

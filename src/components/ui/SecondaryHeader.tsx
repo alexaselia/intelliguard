@@ -14,7 +14,7 @@ const SecondaryHeader: React.FC<SecondaryHeaderProps> = ({ selectedCategory, set
   return (
     <>
       {/* Desktop Version */}
-      <div className="hidden md:block bg-[hsl(var(--sidebar-background))] px-4 py-3 rounded-lg mb-4">
+      <div className="hidden md:block bg-[hsl(var(--sidebar-background))] px-4 py-3 rounded-lg mb-8">
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
           <TabsList className="flex justify-start space-x-2 lg:space-x-4">
             {categories.map((category) => (

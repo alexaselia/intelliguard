@@ -1,6 +1,6 @@
-// next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false, // Disable React Strict Mode
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
