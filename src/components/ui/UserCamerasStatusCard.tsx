@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
 import Loading from './Loading'; // Adjust the path accordingly
-import Chart from 'chart.js';
 import { Cctv } from 'lucide-react';
+import { Pie, PieChart, Label } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 
 interface Camera {
   id: string;
@@ -15,7 +16,6 @@ interface Camera {
 const UserCamerasStatusCard: React.FC<{ user: User }> = ({ user }) => {
   const [cameras, setCameras] = useState<Camera[]>([]);
   const [loading, setLoading] = useState(true);
-  const chartRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const fetchCameras = async () => {
@@ -36,79 +36,82 @@ const UserCamerasStatusCard: React.FC<{ user: User }> = ({ user }) => {
     fetchCameras();
   }, [user]);
 
-  useEffect(() => {
-    if (chartRef.current && !loading) {
-      const onlineCameras = cameras.filter(camera => camera.online).length;
-      const offlineCameras = cameras.length - onlineCameras;
-
-      const data = [];
-      const backgroundColor = [];
-      const hoverBackgroundColor = [];
-
-      for (let i = 0; i < offlineCameras; i++) {
-        data.push(1);
-        backgroundColor.push('#F64F64');
-        hoverBackgroundColor.push('#F64F64');
-      }
-
-      for (let i = 0; i < onlineCameras; i++) {
-        data.push(1);
-        backgroundColor.push('#5EDC8F');
-        hoverBackgroundColor.push('#5EDC8F');
-      }
-
-      new Chart(chartRef.current, {
-        type: 'doughnut',
-        data: {
-          labels: Array(cameras.length).fill(''),
-          datasets: [
-            {
-              data: data,
-              backgroundColor: backgroundColor,
-              hoverBackgroundColor: hoverBackgroundColor,
-              borderWidth: 3, // Adjust border width to create space between segments
-              borderColor: '#262B31', // Border color to enhance the separation effect
-            },
-          ],
-        },
-        options: {
-          cutoutPercentage: 70, // Adjust the size of the inner cutout
-          maintainAspectRatio: false,
-          legend: {
-            display: false,
-          },
-          tooltips: {
-            enabled: true,
-          },
-        },
-      });
-    }
-  }, [cameras, loading]);
-
   if (loading) {
     return <Loading />; // Show loading state while fetching data
   }
 
+  const onlineCameras = cameras.filter(camera => camera.online).length;
+  const offlineCameras = cameras.length - onlineCameras;
+
+  const chartData = [
+    { name: "Online", value: onlineCameras, fill: "#5EDC8F" },
+    { name: "Offline", value: offlineCameras, fill: "#F64F64" }
+  ];
+
+  const totalCameras = cameras.length;
+
+  const chartConfig = {
+    online: {
+      label: "Online",
+      color: "hsl(var(--chart-online))",
+    },
+    offline: {
+      label: "Offline",
+      color: "hsl(var(--chart-offline))",
+    },
+  } satisfies ChartConfig;
+
   return (
     <div className="bg-[#262B31] p-4 rounded-lg shadow-md relative">
       <h2 className="text-xl font-bold text-white mb-4">Status das Minhas Câmeras</h2>
-      <div className="relative">
-        <canvas ref={chartRef}></canvas>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Cctv className="text-white w-12 h-12" />
-        </div>
-      </div>
+      <ChartContainer config={chartConfig} className="relative mx-auto aspect-square max-h-[250px]">
+        <PieChart>
+          <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+          <Pie data={chartData} dataKey="value" nameKey="name" innerRadius={60} strokeWidth={5}>
+            <Label
+              content={({ viewBox }) => {
+                if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                  return (
+                    <text
+                      x={viewBox.cx}
+                      y={viewBox.cy}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                    >
+                      <tspan
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        className="fill-foreground text-3xl font-bold"
+                      >
+                        {totalCameras}
+                      </tspan>
+                      <tspan
+                        x={viewBox.cx}
+                        y={(viewBox.cy || 0) + 24}
+                        className="fill-muted-foreground"
+                      >
+                        Total Cameras
+                      </tspan>
+                    </text>
+                  );
+                }
+                return null;
+              }}
+            />
+          </Pie>
+        </PieChart>
+      </ChartContainer>
       <div className="flex justify-around text-white mt-4">
         <div className="flex items-center">
           <span className="inline-block w-4 h-4 bg-[#5EDC8F] rounded-full mr-2"></span>
-          Online: {cameras.filter(camera => camera.online).length}
+          Online: {onlineCameras}
         </div>
         <div className="flex items-center">
           <span className="inline-block w-4 h-4 bg-[#F64F64] rounded-full mr-2"></span>
-          Offline: {cameras.filter(camera => !camera.online).length}
+          Offline: {offlineCameras}
         </div>
         <div className="flex items-center">
-          Total: {cameras.length}
+          Total: {totalCameras}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/utils/supabase/client';
 import MenuItem from './MenuItem';
+import { Home, Cctv, MapPin, Film, Settings2, LayoutDashboard } from 'lucide-react'; // Importing icons from Lucide
 
 const Sidebar: React.FC = () => {
   const [user, setUser] = useState(null);
@@ -15,10 +16,12 @@ const Sidebar: React.FC = () => {
   const supabase = createClient();
 
   const menuItems = [
-    { name: 'Home', href: '/', description: 'Seu painel geral.', iconPath: '/icons/home.svg' },
-    { name: 'Câmeras', href: '/cameras', description: 'Ao vivo e gravações.', iconPath: '/icons/cameras.svg' },
-    { name: 'Mapa', href: '/mapa', description: 'Câmeras em um mapa.', iconPath: '/icons/map.svg' },
-    { name: 'Configurações', href: '/configuracoes', description: 'Ajuste suas preferências.', iconPath: '/icons/configuracoes.svg' },
+    { name: 'Home', href: '/', description: 'Meu painel geral.', IconComponent: Home },
+    { name: 'Câmeras', href: '/cameras', description: 'Minhas e da comunidade.', IconComponent: Cctv },
+    { name: 'Mosaico', href: '/mosaico', description: 'Câmeras em mosaico.', IconComponent: LayoutDashboard }, 
+    { name: 'Gravações', href: '/gravacoes', description: 'Meu histórico.', IconComponent: Film },
+    { name: 'Mapa', href: '/mapa', description: 'Câmeras em um mapa.', IconComponent: MapPin },
+    { name: 'Configurações', href: '/configuracoes', description: 'Ajustar minhas preferências.', IconComponent: Settings2 },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(menuItems.findIndex(item => item.href === pathname));
@@ -82,13 +85,13 @@ const Sidebar: React.FC = () => {
     <>
       <div className="fixed top-16 left-0 h-[calc(100%-4rem)] bg-[hsl(var(--sidebar-background))] p-0 flex flex-col justify-between items-start w-[60px] md:w-[254px] hidden md:flex">
         <ul className="w-full">
-          {menuItems.slice(0, 3).map((item, index) => (
+          {menuItems.slice(0, 5).map((item, index) => ( // Updated slice to include new item
             <li key={item.name} className="w-full py-1">
               <MenuItem
                 name={item.name}
                 href={item.href}
                 description={item.description}
-                iconPath={item.iconPath}
+                IconComponent={item.IconComponent}
                 isActive={pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))}
                 onClick={() => handleNavigation(item.href)}
                 className="text-white hover:text-white"
@@ -100,13 +103,13 @@ const Sidebar: React.FC = () => {
         <div className="w-full">
           <hr className="border-t border-gray-600 my-2 w-full" />
           <ul className="w-full">
-            {menuItems.slice(3).map((item, index) => (
+            {menuItems.slice(5).map((item, index) => (
               <li key={item.name} className="w-full py-1">
                 <MenuItem
                   name={item.name}
                   href={item.href}
                   description={item.description}
-                  iconPath={item.iconPath}
+                  IconComponent={item.IconComponent}
                   isActive={pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))}
                   onClick={() => handleNavigation(item.href)}
                   className="text-white hover:text-white"
@@ -134,9 +137,7 @@ const Sidebar: React.FC = () => {
                 : 'text-[#748287] hover:text-white'
             }`}
           >
-            <img
-              src={item.iconPath}
-              alt={`${item.name} icon`}
+            <item.IconComponent
               className={`h-6 w-6 transition-all duration-300 ${
                 pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
                   ? 'mr-2'

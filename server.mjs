@@ -45,7 +45,7 @@ app.get('/api/filelist/:cameraId', async (req, res) => {
   // Compute the MD5 hash of the cameraId
   const cameraIdHash = md5Hash(cameraId);
 
-  const fileListUrl = `https://nginx.megaguardiao.com.br/api/${cameraIdHash}.json`;
+  const fileListUrl = `https://nginx.megaguardiao.com.br/api/${cameraIdHash}_mp4.json`;
 
   try {
     const response = await axios.get(fileListUrl, {
@@ -64,6 +64,8 @@ app.get('/api/filelist/:cameraId', async (req, res) => {
 
     // Construct the full URLs for the video files
     const videoUrls = filteredFiles.map(file => `https://nginx.megaguardiao.com.br/play/${cameraIdHash}/${file}`);
+
+    console.log(`Fetched file list for cameraId ${cameraIdHash}:`, videoUrls);
 
     return res.json(videoUrls);
   } catch (error) {

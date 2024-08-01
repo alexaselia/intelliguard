@@ -29,6 +29,7 @@ export default function RootLayout({
   const isAuthPage =
     pathname === "/login" || pathname === "/reset-password" || pathname === "/change-password";
   const isMapPage = pathname === "/mapa";
+  const isMosaicPage = pathname === "/mosaico"; // Check if on mosaico page
 
   return (
     <html lang="en">
@@ -39,17 +40,17 @@ export default function RootLayout({
       </Head>
       <body className={`${inter.className} bg-background text-foreground`}>
         <div className="h-screen flex flex-col">
-          {!isAuthPage && <Header />}
-          <div className={`flex flex-grow overflow-hidden ${isAuthPage ? "" : "mt-16"}`}>
-            {!isAuthPage && <Sidebar />}
-            <div className={`flex-grow ${!isAuthPage ? "md:ml-[254px] ml-0" : ""} relative`}>
+          {!isAuthPage && !isMosaicPage && <Header />}
+          <div className={`flex flex-grow overflow-hidden ${isAuthPage || isMosaicPage ? "" : "mt-16"}`}>
+            {!isAuthPage && !isMosaicPage && <Sidebar />}
+            <div className={`flex-grow ${!isAuthPage && !isMosaicPage ? "md:ml-[254px] ml-0" : ""} relative`}>
               {isAuthPage ? (
                 <main className="relative h-full w-full flex justify-center items-center bg-background">
                   {children}
                 </main>
               ) : (
                 <>
-                  {isMapPage ? (
+                  {isMapPage || isMosaicPage ? (
                     <main className="relative h-full w-full overflow-hidden pb-16 md:pb-0">
                       {children}
                     </main>

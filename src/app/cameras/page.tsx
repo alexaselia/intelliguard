@@ -6,7 +6,7 @@ import DynamicCameraCard from '@/components/ui/DynamicCameraCard';
 import { createClient } from '@/lib/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CircleAlert } from 'lucide-react';
+import { CircleAlert, LayoutDashboard } from 'lucide-react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { getDistance } from 'geolib';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ interface CameraLocation {
 }
 
 const Cameras: React.FC = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [casaStreams, setCasaStreams] = useState<CameraLocation[]>([]);
@@ -34,7 +34,6 @@ const Cameras: React.FC = () => {
   const [settings, setSettings] = useState<{ share: boolean; share_distance: number } | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('Casa');
   const [hasSharedCameras, setHasSharedCameras] = useState(false);
-  const [isMosaicOpen, setIsMosaicOpen] = useState(false);
 
   const supabase = createClient();
 
@@ -97,6 +96,7 @@ const Cameras: React.FC = () => {
           const cachedThumbnail = localStorage.getItem(`thumbnail_${camera.id}`);
           return { ...camera, thumbnail: cachedThumbnail || camera.thumbnail };
         });
+        updatedCameras.sort((a, b) => a.name.localeCompare(b.name)); // Sort cameras by name
         setCasaStreams(updatedCameras);
         console.log('Fetched Casa cameras:', updatedCameras);
       }
@@ -151,6 +151,7 @@ const Cameras: React.FC = () => {
           return { ...camera, thumbnail: cachedThumbnail || camera.thumbnail };
         });
 
+        filteredCameras.sort((a, b) => a.name.localeCompare(b.name)); // Sort cameras by name
         setComunidadeStreams(filteredCameras);
         setHasSharedCameras(true);
         console.log('Fetched Comunidade cameras:', filteredCameras);
@@ -195,8 +196,8 @@ const Cameras: React.FC = () => {
           <h1 className="text-2xl md:text-3xl font-bold text-white">Câmeras</h1>
           <p className="text-1xl md:text-1xl text-gray-400">Ao vivo e suas gravações.</p>
         </div>
-        <Button onClick={() => setIsMosaicOpen(true)} className="bg-[#2D3343] text-white hover:bg-gray-600">
-          <img src="/icons/expand.svg" alt="Mosaico" className="w-4 h-4 mr-2" />
+        <Button onClick={() => router.push('/mosaico')} className="bg-[#2D3343] text-white hover:bg-gray-600">
+          <LayoutDashboard className="w-4 h-4 mr-2" />
           Mosaico
         </Button>
       </motion.div>
@@ -244,7 +245,6 @@ const Cameras: React.FC = () => {
           )}
         </motion.div>
       )}
-      {isMosaicOpen && <Mosaic onClose={() => setIsMosaicOpen(false)} />}
     </div>
   );
 };

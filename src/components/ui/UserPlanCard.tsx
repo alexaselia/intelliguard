@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/utils/supabase/client';
 import { User } from '@supabase/supabase-js';
-import { Shield, Sparkle, SquareArrowOutUpRight } from 'lucide-react';
-import Loading from './Loading'; // Adjust the path accordingly
+import { Shield, Sparkle } from 'lucide-react';
 
 interface Plan {
   id: string;
@@ -13,7 +12,7 @@ interface Plan {
 
 const UserPlanCard: React.FC<{ user: User }> = ({ user }) => {
   const [plan, setPlan] = useState<Plan | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserPlan = async () => {
@@ -28,7 +27,7 @@ const UserPlanCard: React.FC<{ user: User }> = ({ user }) => {
 
       if (userError || !userData) {
         console.error('Error fetching user data:', userError);
-        setLoading(false);
+        setError('Erro ao buscar dados do usuário');
         return;
       }
 
@@ -43,19 +42,18 @@ const UserPlanCard: React.FC<{ user: User }> = ({ user }) => {
 
       if (planError || !planData) {
         console.error('Error fetching plan data:', planError);
-        setLoading(false);
+        setError('Erro ao buscar dados do plano');
         return;
       }
 
       setPlan({ id: planId, name: planData.name });
-      setLoading(false);
     };
 
     fetchUserPlan();
   }, [user]);
 
-  if (loading) {
-    return <Loading />; // Show loading state while fetching data
+  if (error) {
+    return <p className="text-white text-lg text-center">{error}</p>;
   }
 
   const renderSparkles = (count: number) => {
@@ -67,25 +65,19 @@ const UserPlanCard: React.FC<{ user: User }> = ({ user }) => {
   return (
     <div className="bg-[#262B31] p-4 rounded-lg shadow-md relative">
       <h2 className="text-xl font-bold text-white mb-4 text-left">Meu Plano</h2>
-      <div className="flex flex-col justify-center items-center mb-1">
-        <Shield className="text-white w-24 h-24 mb-2" />
-        <div className="flex justify-center items-center mb-2">
-          {plan ? renderSparkles(plan.id) : null}
-        </div>
-      </div>
-      {plan ? (
-        <>
-          <p className="text-white text-lg text-center">{plan.name}</p>
-          <div className="mt-1 text-center">
-            <a href="#" className="text-blue-500 flex justify-center items-center">
-              Comparar planos
-              <SquareArrowOutUpRight className="ml-1 w-4 h-4" />
-            </a>
+      <div className="flex flex-col justify-center items-center flex-grow">
+        <div className="flex flex-col justify-center items-center mb-1">
+          <Shield className="text-white w-24 h-24 mb-4" />
+          <div className="flex justify-center items-center mb-0">
+            {plan ? renderSparkles(plan.id) : null}
           </div>
-        </>
-      ) : (
-        <p className="text-white text-lg text-center">Plano não encontrado</p>
-      )}
+        </div>
+        {plan ? (
+          <p className="text-white text-lg text-center">{plan.name}</p>
+        ) : (
+          <p className="text-white text-lg text-center">Plano não encontrado</p>
+        )}
+      </div>
     </div>
   );
 };

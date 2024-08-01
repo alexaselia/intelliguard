@@ -3,11 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import UserCamerasStatusCard from '@/components/ui/UserCamerasStatusCard';
 import UserPlanCard from '@/components/ui/UserPlanCard';
+import CaptureDaysCard from '@/components/ui/CaptureDaysCard'; // Adjust the path accordingly
 import { createClient } from '@/lib/utils/supabase/client';
 import { redirect } from 'next/navigation';
 import { User } from '@supabase/supabase-js';
-import Loading from '@/components/ui/Loading'; // Adjust the path accordingly
 import { motion } from 'framer-motion';
+import Loading from '@/components/ui/Loading';
+
 
 const Home: React.FC = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -54,7 +56,7 @@ const Home: React.FC = () => {
   };
 
   if (loading) {
-    return <Loading />; // Show custom loading state while checking user session
+    return <Loading />; // Show loading state while checking user session
   }
 
   if (!user) {
@@ -74,13 +76,14 @@ const Home: React.FC = () => {
         </div>
       </motion.div>
       <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 gap-10"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.3 }}
       >
         <UserCamerasStatusCard user={user} />
         <UserPlanCard user={user} />
+        <CaptureDaysCard user={user} />
       </motion.div>
     </div>
   );

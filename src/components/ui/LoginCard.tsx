@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 interface LoginCardProps {
   onLoginClick: (formData: FormData) => void;
@@ -65,9 +66,14 @@ const LoginCard: React.FC<LoginCardProps> = ({
                 className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 text-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               />
             </div>
-            <div className="pt-3">
+            <div className="text-left">
+              <Link href="/reset-password" className="text-sm text-blue-500 hover:underline">
+                Esqueceu a senha?
+              </Link>
+            </div>
+            <div className="pt-2">
               <div>
-                <Button type="submit" className="w-full bg-[#1E90FF] hover:bg-[#1C86EE]">
+                <Button type="submit" className="w-full bg-white bg-opacity-80 text-black hover:bg-white hover:bg-opacity-100">
                   Entrar
                 </Button>
               </div>

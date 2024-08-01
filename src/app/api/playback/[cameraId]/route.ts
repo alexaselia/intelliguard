@@ -14,12 +14,15 @@ export async function GET(request: Request, { params }: { params: { cameraId: st
   const cameraIdHash = md5Hash(cameraId);
 
   // Construct the URL to fetch the JSON file for the specific camera using the MD5 hash
-  const url = `https://nginx.megaguardiao.com.br/api/${cameraIdHash}.json`;
+  const url = `https://nginx.megaguardiao.com.br/api/${cameraIdHash}_mp4.json`;
 
   try {
     // Fetch the JSON file
     const response = await axios.get(url);
     const videoFiles = response.data;
+
+    // Log the response
+    console.log(`Fetched video files for cameraId ${cameraIdHash}:`, videoFiles);
 
     // Return the list of video files
     return NextResponse.json(videoFiles);

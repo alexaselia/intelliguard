@@ -1,163 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import HlsPlayer from '@/components/ui/HlsPlayer';
-import { createClient } from '@/lib/utils/supabase/client';
-import { getDistance } from 'geolib';
-
-interface CameraLocation {
-  id: string;
-  name: string;
-  url: string;
-  ownership: string;
-  shared: boolean;
-  latitude: number;
-  longitude: number;
-  thumbnail: string;
-}
+import React, { useState } from 'react';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable';
+import MosaicPlayer from './MosaicPlayer';
 
 interface MosaicProps {
+  cameras: { id: string, url: string }[];
   onClose: () => void;
 }
 
-const Mosaic: React.FC<MosaicProps> = ({ onClose }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [casaStreams, setCasaStreams] = useState<CameraLocation[]>([]);
-  const [comunidadeStreams, setComunidadeStreams] = useState<CameraLocation[]>([]);
-  const [settings, setSettings] = useState<{ share: boolean; share_distance: number } | null>(null);
-  const [filteredStreams, setFilteredStreams] = useState<CameraLocation[]>([]);
-
-  const supabase = createClient(); // Create the client instance here
-
-  useEffect(() => {
-    const fetchUserSession = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (error || !data.session) {
-        console.log('No user found, redirecting to login');
-      } else {
-        console.log('User authenticated:', data.session.user);
-        setUser(data.session.user);
-      }
-      setLoading(false);
-    };
-
-    fetchUserSession();
-  }, []);
-
-  useEffect(() => {
-    const fetchUserSettings = async () => {
-      if (!user) return;
-
-      try {
-        const { data: userData, error: userError } = await supabase
-          .from('people')
-          .select('share, share_distance')
-          .eq('user_uid', user.id)
-          .single();
-
-        if (userError) {
-          console.error('Failed to fetch user settings:', userError);
-        } else {
-          setSettings(userData);
-          console.log('User settings:', userData);
-        }
-      } catch (error) {
-        console.error('Error fetching user settings:', error);
-      }
-    };
-
-    const fetchCameras = async () => {
-      if (!user) return;
-
-      try {
-        const { data: cameraData, error: cameraError } = await supabase
-          .from('cameras')
-          .select('*');
-
-        if (cameraError) {
-          console.error('Failed to fetch cameras:', cameraError);
-        } else {
-          const userCameras = cameraData.filter(camera => camera.ownership === user.id);
-          setCasaStreams(userCameras);
-
-          const sharedCameras = cameraData.filter(camera => camera.shared && camera.ownership !== user.id);
-          setComunidadeStreams(sharedCameras);
-        }
-      } catch (error) {
-        console.error('Error fetching cameras:', error);
-      }
-    };
-
-    if (user) {
-      fetchUserSettings();
-      fetchCameras();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (!settings || !user) return;
-
-    const userSharedCameras = casaStreams.filter(camera => camera.shared);
-
-    if (!settings.share || userSharedCameras.length === 0) {
-      setFilteredStreams(casaStreams);
-      return;
-    }
-
-    const filteredComunidadeCameras = comunidadeStreams.filter(camera => {
-      const isInUserDistance = casaStreams.some(userCamera => {
-        const distance = getDistance(
-          { latitude: userCamera.latitude, longitude: userCamera.longitude },
-          { latitude: camera.latitude, longitude: camera.longitude }
-        );
-        return distance <= settings.share_distance;
-      });
-
-      return isInUserDistance;
-    });
-
-    setFilteredStreams([...casaStreams, ...filteredComunidadeCameras]);
-  }, [settings, casaStreams, comunidadeStreams, user]);
-
-  if (!user || !settings) {
-    return null;
-  }
-
-  const getGridTemplate = (numCameras: number) => {
-    const sqrt = Math.ceil(Math.sqrt(numCameras));
-    const numCols = sqrt;
-    const numRows = Math.ceil(numCameras / sqrt);
-    return {
-      gridTemplateColumns: `repeat(${numCols}, 1fr)`,
-      gridTemplateRows: `repeat(${numRows}, 1fr)`,
-    };
-  };
-
-  const gridStyle = getGridTemplate(filteredStreams.length);
+const Mosaic: React.FC<MosaicProps> = ({ cameras, onClose }) => {
+  const [layout, setLayout] = useState(cameras);
 
   return (
-    <div className="fixed inset-0 bg-black z-50 overflow-hidden">
-      <button onClick={onClose} className="absolute top-4 right-4 text-white z-50">
-        Close
+    <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex flex-col">
+      <button
+        onClick={onClose}
+        className="bg-red-600 text-white p-2 rounded-md self-end m-4"
+      >
+        Close Mosaic
       </button>
-      <div className="grid gap-4 p-4 w-full h-full" style={gridStyle}>
-        {filteredStreams.map((camera) => (
-          <div key={camera.id} className="relative group">
-            <HlsPlayer
-              src={camera.url}
-              autoPlay={true}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white hidden group-hover:flex transition-opacity duration-200">
-              <p>{camera.name}</p>
+      <div className="flex-grow p-4">
+        <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
+          {layout.map((camera) => (
+            <div key={camera.id} className="relative">
+              <ResizablePanelGroup direction="vertical">
+                <ResizablePanel defaultSize={100}>
+                  <div className="h-full flex flex-col">
+                    <MosaicPlayer src={camera.url} autoPlay className="flex-grow" />
+                  </div>
+                </ResizablePanel>
+                <ResizableHandle />
+              </ResizablePanelGroup>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-      <style jsx>{`
-        .group:hover .group-hover\:flex {
-          display: flex;
-        }
-      `}</style>
     </div>
   );
 };

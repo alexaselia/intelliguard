@@ -1,18 +1,18 @@
-import Image from 'next/image';
 import React from 'react';
+import { Icon } from 'lucide-react';
 
 interface MenuItemProps {
   name: string;
   href: string;
   description: string;
-  iconPath: string;
+  IconComponent: Icon;
   isActive: boolean;
   onClick: () => void;
   className?: string;
   activeClassName?: string;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ name, href, description, iconPath, isActive, onClick, className, activeClassName }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ name, href, description, IconComponent, isActive, onClick, className, activeClassName }) => {
   return (
     <div
       onClick={onClick}
@@ -20,14 +20,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ name, href, description, iconPath, 
         isActive ? activeClassName : className
       } hover:bg-gray-700 cursor-pointer`}
     >
-      <Image
-        src={iconPath}
-        alt={`${name} icon`}
-        width={24}
-        height={24}
-        className="mr-3"
-        style={{ width: '24px', height: '24px' }}
-      />
+      <IconComponent className="mr-3" size={24} />
       <div className="hidden md:block">
         <p className="font-semibold">{name}</p>
         <p className="text-gray-400">{description}</p>
